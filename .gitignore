@@ -8,6 +8,7 @@ __MACOSX/
 ssl/
 tmp/
 node-x64/
+.env
 
 # Build revision file generated while building a release
 REVISION
