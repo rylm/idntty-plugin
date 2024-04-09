@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AuthenticatorTransportFuture {
+  ble
+  cable
+  hybrid
+  internal
+  nfc
+  smart_card
+  usb
+}
+
+model User {
+  public_key        String                @id
+  username          String
+  encrypted_message EncryptedMessage?
+  devices           AuthenticatorDevice[]
+
+  @@map("users")
+}
+
+model EncryptedMessage {
+  id      Int    @id @default(autoincrement())
+  message String
+  nonce   String
+  user_id String @unique
+  user    User   @relation(fields: [user_id], references: [public_key])
+
+  @@map("encrypted_messages")
+}
+
+model AuthenticatorDevice {
+  credential_id         Bytes                    @id
+  credential_public_key Bytes
+  counter               Int
+  user_id               String
+  user                  User                     @relation(fields: [user_id], references: [public_key])
+  transports            AuthenticatorTransport[]
+
+  @@map("authenticator_devices")
+}
+
+model AuthenticatorTransport {
+  device_id Bytes
+  device    AuthenticatorDevice          @relation(fields: [device_id], references: [credential_id])
+  transport AuthenticatorTransportFuture
+
+  @@id([device_id, transport])
+  @@map("authenticator_transports")
+}
