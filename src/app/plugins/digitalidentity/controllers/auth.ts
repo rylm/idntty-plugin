@@ -75,6 +75,10 @@ export const register =
 		req.session.set('publicKey', publicKey);
 		req.session.set('username', username);
 
+		console.log(req.session.get('currentChallenge'));
+		console.log(req.session.get('publicKey'));
+		console.log(req.session.get('username'));
+
 		return res.send(options);
 	};
 

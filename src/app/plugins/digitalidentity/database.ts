@@ -112,3 +112,27 @@ export const updateAuthenticatorDevice = async ({
 			counter,
 		},
 	});
+
+export const saveEncryptedData = async ({
+	publicKey,
+	encryptedData,
+	nonce,
+}: {
+	publicKey: string;
+	encryptedData: string;
+	nonce: string;
+}) =>
+	prisma.encryptedMessage.create({
+		data: {
+			user_id: publicKey,
+			message: encryptedData,
+			nonce,
+		},
+	});
+
+export const getEncryptedData = async (publicKey: string) =>
+	prisma.encryptedMessage.findFirst({
+		where: {
+			user_id: publicKey,
+		},
+	});

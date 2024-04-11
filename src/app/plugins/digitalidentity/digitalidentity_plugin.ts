@@ -24,7 +24,9 @@ server.register(fastifyCors, {
 server.register(fastifyCookie);
 server.register(fastifySession, {
 	secret: process.env.SESSION_SECRET ?? '',
-	cookie: { secure: false },
+	cookie: {
+		sameSite: 'none',
+	},
 });
 
 export class DigitalidentityPlugin extends BasePlugin {
@@ -41,6 +43,8 @@ export class DigitalidentityPlugin extends BasePlugin {
 		server.post('/register/verify', controllers.auth.registerVerify());
 		server.get('/login', controllers.auth.login());
 		server.post('/login/verify', controllers.auth.loginVerify());
+		server.post('/message/send', controllers.data.messageSend());
+		server.get('/message/get', controllers.data.messageGet());
 
 		server.listen({ port: 8000 });
 		console.log('DI:Loaded');
