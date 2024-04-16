@@ -136,3 +136,24 @@ export const getEncryptedData = async (publicKey: string) =>
 			user_id: publicKey,
 		},
 	});
+
+export const saveBadgeImage = async ({
+	publicKey,
+	fileKey,
+}: {
+	publicKey: string;
+	fileKey: string;
+}) =>
+	prisma.badge.create({
+		data: {
+			user_id: publicKey,
+			fileKey,
+		},
+	});
+
+export const getBadgeImagesByPublicKey = async (publicKey: string) =>
+	prisma.badge.findMany({
+		where: {
+			user_id: publicKey,
+		},
+	});
