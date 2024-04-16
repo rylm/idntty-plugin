@@ -11,5 +11,6 @@ module.exports = {
 		'@typescript-eslint/no-floating-promises': 'off',
 		'no-console': 'off',
 		'@typescript-eslint/no-empty-function': 'off',
+		'@typescript-eslint/restrict-template-expressions': 'off',
 	},
 };

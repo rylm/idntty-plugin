@@ -41,10 +41,14 @@ export class DigitalidentityPlugin extends BasePlugin {
 
 		server.get('/register', controllers.auth.register());
 		server.post('/register/verify', controllers.auth.registerVerify());
+
 		server.get('/login', controllers.auth.login());
 		server.post('/login/verify', controllers.auth.loginVerify());
+
 		server.post('/message/send', controllers.data.messageSend());
 		server.get('/message/get', controllers.data.messageGet());
+
+		server.post('/get-upload-url', controllers.s3.getUploadUrl());
 
 		server.listen({ port: 8000 });
 		console.log('DI:Loaded');
