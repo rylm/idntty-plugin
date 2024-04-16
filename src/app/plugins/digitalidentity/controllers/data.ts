@@ -33,5 +33,5 @@ export const messageGet =
 
 		const message = await getEncryptedData(publicKey);
 
-		return res.send({ message });
+		return res.send(message);
 	};
