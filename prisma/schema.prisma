@@ -22,6 +22,7 @@ model User {
   username          String
   encrypted_message EncryptedMessage?
   devices           AuthenticatorDevice[]
+  badges            Badge[]
 
   @@map("users")
 }
@@ -54,4 +55,13 @@ model AuthenticatorTransport {
 
   @@id([device_id, transport])
   @@map("authenticator_transports")
+}
+
+model Badge {
+  id      Int    @id @default(autoincrement())
+  fileKey String
+  userId  String
+  user    User   @relation(fields: [userId], references: [public_key])
+
+  @@map("badges")
 }
