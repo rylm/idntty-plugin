@@ -204,12 +204,8 @@ export const saveUserDataEntry = async ({
 								},
 							});
 						} else {
-							console.log('Creating a new data item', {
-								userDataEntryId: existingEntry.id,
-								uuid: item.uuid,
-								value: Buffer.from(item.value),
-								nonce: Buffer.from(item.nonce),
-							});
+							console.log('Possible error at Buffer.from(item.value)', item.value);
+							console.log('Possible error at Buffer.from(item.nonce)', item.nonce);
 							await prisma.dataItem.create({
 								data: {
 									userDataEntryId: existingEntry.id,
