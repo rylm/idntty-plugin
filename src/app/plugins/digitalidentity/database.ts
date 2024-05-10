@@ -205,7 +205,8 @@ export const saveUserDataEntry = async ({
 							});
 						} else {
 							console.log('Possible error at Buffer.from(item.value)', item.value);
-							console.log(typeof item.value);
+							// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+							console.log(typeof (item.value as Uint8Array));
 							console.log('Possible error at Buffer.from(item.nonce)', item.nonce);
 							console.log(Buffer.from(item.nonce));
 							await prisma.dataItem.create({
