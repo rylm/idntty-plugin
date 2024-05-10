@@ -184,6 +184,15 @@ export const saveUserDataEntry = async ({
 			if (existingEntry) {
 				await Promise.all(
 					data.map(async item => {
+						const itemValue = Buffer.from(new Uint8Array(Object.values(item.value)));
+						const itemNonce = Buffer.from(new Uint8Array(Object.values(item.nonce)));
+
+						console.log('Trying to save data item', {
+							uuid: item.uuid,
+							value: itemValue,
+							nonce: itemNonce,
+						});
+
 						const existingDataItem = await prisma.dataItem.findFirst({
 							where: {
 								userDataEntryId: existingEntry.id,
@@ -199,22 +208,18 @@ export const saveUserDataEntry = async ({
 									id: existingDataItem.id,
 								},
 								data: {
-									value: Buffer.from(item.value),
-									nonce: Buffer.from(item.nonce),
+									value: itemValue,
+									nonce: itemNonce,
 								},
 							});
 						} else {
-							console.log('Possible error at Buffer.from(item.value)', item.value);
-							// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-							console.log(typeof (item.value as Uint8Array));
-							console.log('Possible error at Buffer.from(item.nonce)', item.nonce);
-							console.log(Buffer.from(item.nonce));
+							console.log('Creating a new data item');
 							await prisma.dataItem.create({
 								data: {
 									userDataEntryId: existingEntry.id,
 									uuid: item.uuid,
-									value: Buffer.from(item.value),
-									nonce: Buffer.from(item.nonce),
+									value: itemValue,
+									nonce: itemNonce,
 								},
 							});
 						}
