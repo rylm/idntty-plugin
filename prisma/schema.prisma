@@ -18,23 +18,35 @@ enum AuthenticatorTransportFuture {
 }
 
 model User {
-  public_key        String                @id
-  username          String
-  encrypted_message EncryptedMessage?
-  devices           AuthenticatorDevice[]
-  badges            Badge[]
+  public_key  String                @id
+  username    String
+  devices     AuthenticatorDevice[]
+  badges      Badge[]
+  dataEntries UserDataEntry[]       @relation("UserToUserDataEntry")
+  layout      Json
 
   @@map("users")
 }
 
-model EncryptedMessage {
-  id      Int    @id @default(autoincrement())
-  message String
-  nonce   String
-  user_id String @unique
-  user    User   @relation(fields: [user_id], references: [public_key])
+model UserDataEntry {
+  id        Int        @id @default(autoincrement())
+  user_id   String
+  user      User       @relation(fields: [user_id], references: [public_key], name: "UserToUserDataEntry")
+  domain    Bytes
+  dataItems DataItem[] @relation("DataEntryToDataItem")
 
-  @@map("encrypted_messages")
+  @@map("user_data_entries")
+}
+
+model DataItem {
+  id              Int           @id @default(autoincrement())
+  userDataEntryId Int
+  userDataEntry   UserDataEntry @relation(fields: [userDataEntryId], references: [id], name: "DataEntryToDataItem")
+  uuid            String
+  value           Bytes
+  nonce           Bytes
+
+  @@map("data_items")
 }
 
 model AuthenticatorDevice {

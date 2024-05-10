@@ -3,21 +3,24 @@ import type { FastifyRequest, FastifyReply } from 'fastify';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 
-import { getBadgeImagesByPublicKey } from '../database';
+import { saveBadgeImage, getBadgeImagesByPublicKey } from '../database';
+import { uuidv4 } from '../../../../lib/utils';
 
 const s3Client = new S3Client({ region: 'eu-west-1' });
 
 export const getUploadUrl =
 	() =>
 	async (
-		req: FastifyRequest<{ Body: { fileName: string; contentType: string } }>,
+		req: FastifyRequest<{ Body: { userID: string; fileName: string; contentType: string } }>,
 		res: FastifyReply,
 	) => {
-		const { fileName, contentType } = req.body;
+		const { userID, fileName, contentType } = req.body;
+
+		const newFileName = `${uuidv4()}-${fileName}`;
 
 		const command = new PutObjectCommand({
-			Bucket: 'io.idntty.images',
-			Key: fileName,
+			Bucket: 'io.idntty.cdn',
+			Key: newFileName,
 			ContentType: contentType,
 		});
 
@@ -25,7 +28,8 @@ export const getUploadUrl =
 			const url = await getSignedUrl(s3Client, command, {
 				expiresIn: 3600,
 			});
-			return res.send({ url });
+			await saveBadgeImage({ publicKey: userID, fileKey: newFileName });
+			return res.send({ url, newFileName });
 		} catch (error) {
 			console.error(error);
 			return res.status(500).send({ error: `Error generating a presigned URL: ${error}` });
@@ -52,7 +56,7 @@ export const getUploadedImages =
 			const urls = await Promise.all(
 				badges.map(async badge => {
 					const command = new GetObjectCommand({
-						Bucket: 'io.idntty.images',
+						Bucket: 'io.idntty.cdn',
 						Key: badge.fileKey,
 					});
 

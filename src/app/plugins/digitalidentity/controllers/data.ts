@@ -1,27 +1,20 @@
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
-import { saveEncryptedData, getEncryptedData } from '../database';
+import {
+	getUserLayout,
+	updateUserLayout,
+	getPrivateUserDataEntry,
+	getPublicUserDataEntry,
+	getSharedUserDataEntry,
+	saveUserDataEntry,
+} from '../database';
 
-export const messageSend =
-	() =>
-	async (
-		req: FastifyRequest<{
-			Body: {
-				publicKey: string;
-				message: string;
-				nonce: string;
-			};
-		}>,
-		res: FastifyReply,
-	) => {
-		const { publicKey, message, nonce } = req.body;
-
-		await saveEncryptedData({ publicKey, encryptedData: message, nonce });
-
-		return res.send({ success: true });
-	};
-
-export const messageGet =
+export interface DataEntry {
+	uuid: string;
+	value: Uint8Array;
+	nonce: Uint8Array;
+}
+export const getLayout =
 	() =>
 	async (
 		req: FastifyRequest<{
@@ -31,7 +24,89 @@ export const messageGet =
 	) => {
 		const { publicKey } = req.query;
 
-		const message = await getEncryptedData(publicKey);
+		const layout = await getUserLayout(publicKey);
 
-		return res.send(message);
+		return res.send(layout);
+	};
+
+export const updateLayout =
+	() =>
+	async (
+		req: FastifyRequest<{
+			Body: {
+				publicKey: string;
+				layout: object;
+			};
+		}>,
+		res: FastifyReply,
+	) => {
+		const { publicKey, layout } = req.body;
+
+		await updateUserLayout({ publicKey, layout });
+
+		return res.send({ success: true });
+	};
+
+export const getPrivateData =
+	() =>
+	async (
+		req: FastifyRequest<{
+			Querystring: { publicKey: string };
+		}>,
+		res: FastifyReply,
+	) => {
+		const { publicKey } = req.query;
+
+		const data = await getPrivateUserDataEntry(publicKey);
+
+		return res.send(data);
+	};
+
+export const getPublicData =
+	() =>
+	async (
+		req: FastifyRequest<{
+			Querystring: { publicKey: string };
+		}>,
+		res: FastifyReply,
+	) => {
+		const { publicKey } = req.query;
+
+		const data = await getPublicUserDataEntry(publicKey);
+
+		return res.send(data);
+	};
+
+export const getSharedData =
+	() =>
+	async (
+		req: FastifyRequest<{
+			Querystring: { publicKey: string; forPublicKey: string };
+		}>,
+		res: FastifyReply,
+	) => {
+		const { publicKey, forPublicKey } = req.query;
+
+		const data = await getSharedUserDataEntry(publicKey, forPublicKey);
+
+		return res.send(data);
+	};
+
+export const saveData =
+	() =>
+	async (
+		req: FastifyRequest<{
+			Body: {
+				publicKey: string;
+				domains: Uint8Array[];
+				data: DataEntry[];
+			};
+		}>,
+		res: FastifyReply,
+	) => {
+		const { publicKey, domains, data } = req.body;
+
+		await saveUserDataEntry({ publicKey, domains, data });
+
+		return res.send({ success: true });
 	};

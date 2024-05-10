@@ -26,6 +26,7 @@ server.register(fastifySession, {
 	secret: process.env.SESSION_SECRET ?? '',
 	cookie: {
 		sameSite: 'none',
+		secure: false,
 	},
 });
 
@@ -45,8 +46,13 @@ export class DigitalidentityPlugin extends BasePlugin {
 		server.get('/login', controllers.auth.login());
 		server.post('/login/verify', controllers.auth.loginVerify());
 
-		server.post('/message/send', controllers.data.messageSend());
-		server.get('/message/get', controllers.data.messageGet());
+		server.get('/layout', controllers.data.getLayout());
+		server.post('/layout/update', controllers.data.updateLayout());
+
+		server.get('/data/private', controllers.data.getPrivateData());
+		server.get('/data/public', controllers.data.getPublicData());
+		server.get('/data/shared', controllers.data.getSharedData());
+		server.post('/data/save', controllers.data.saveData());
 
 		server.post('/get-upload-url', controllers.s3.getUploadUrl());
 		server.get('/get-uploaded-images', controllers.s3.getUploadedImages());
