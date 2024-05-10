@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import type { AuthenticatorTransportFuture } from '@simplewebauthn/typescript-types';
+import type { DataEntry } from './controllers/data';
 
 const prisma = new PrismaClient();
 
@@ -41,6 +42,7 @@ export const createUser = async ({
 	credentialPublicKey,
 	counter,
 	transports,
+	layout,
 }: {
 	publicKey: string;
 	username: string;
@@ -48,11 +50,13 @@ export const createUser = async ({
 	credentialPublicKey: Uint8Array;
 	counter: number;
 	transports: AuthenticatorTransportFuture[];
+	layout: object;
 }) =>
 	prisma.user.create({
 		data: {
 			public_key: publicKey,
 			username,
+			layout: JSON.stringify(layout),
 			devices: {
 				create: [
 					{
@@ -113,29 +117,183 @@ export const updateAuthenticatorDevice = async ({
 		},
 	});
 
-export const saveEncryptedData = async ({
-	publicKey,
-	encryptedData,
-	nonce,
-}: {
-	publicKey: string;
-	encryptedData: string;
-	nonce: string;
-}) =>
-	prisma.encryptedMessage.create({
-		data: {
-			user_id: publicKey,
-			message: encryptedData,
-			nonce,
+export const getUserLayout = async (publicKey: string) => {
+	const user = await prisma.user.findUnique({
+		where: {
+			public_key: publicKey,
+		},
+		select: {
+			layout: true,
 		},
 	});
 
-export const getEncryptedData = async (publicKey: string) =>
-	prisma.encryptedMessage.findFirst({
+	if (!user) {
+		throw new Error('User not found');
+	}
+
+	return JSON.parse(user.layout as string) as object;
+};
+
+export const updateUserLayout = async ({
+	publicKey,
+	layout,
+}: {
+	publicKey: string;
+	layout: object;
+}) =>
+	prisma.user.update({
 		where: {
-			user_id: publicKey,
+			public_key: publicKey,
+		},
+		data: {
+			layout: JSON.stringify(layout),
 		},
 	});
+
+export const saveUserDataEntry = async ({
+	publicKey,
+	domains,
+	data,
+}: {
+	publicKey: string;
+	domains: Uint8Array[];
+	data: DataEntry[];
+}) => {
+	console.log('Trying to save user data entry', { publicKey, domains, data });
+
+	const userExists = await prisma.user.findUnique({
+		where: { public_key: publicKey },
+	});
+
+	if (!userExists) {
+		throw new Error('User does not exist with the provided public key');
+	}
+
+	await Promise.all(
+		domains.map(async domain => {
+			const existingEntry = await prisma.userDataEntry.findFirst({
+				where: {
+					user_id: publicKey,
+					domain: Buffer.from(domain),
+				},
+			});
+
+			if (existingEntry) {
+				await Promise.all(
+					data.map(async item => {
+						const existingDataItem = await prisma.dataItem.findFirst({
+							where: {
+								userDataEntryId: existingEntry.id,
+								uuid: item.uuid,
+							},
+						});
+
+						if (existingDataItem) {
+							await prisma.dataItem.update({
+								where: {
+									id: existingDataItem.id,
+								},
+								data: {
+									value: Buffer.from(item.value),
+									nonce: Buffer.from(item.nonce),
+								},
+							});
+						} else {
+							await prisma.dataItem.create({
+								data: {
+									userDataEntryId: existingEntry.id,
+									uuid: item.uuid,
+									value: Buffer.from(item.value),
+									nonce: Buffer.from(item.nonce),
+								},
+							});
+						}
+					}),
+				);
+			} else {
+				const newEntry = await prisma.userDataEntry.create({
+					data: {
+						user_id: publicKey,
+						domain: Buffer.from(domain),
+					},
+				});
+
+				await Promise.all(
+					data.map(async item =>
+						prisma.dataItem.create({
+							data: {
+								userDataEntryId: newEntry.id,
+								uuid: item.uuid,
+								value: Buffer.from(item.value),
+								nonce: Buffer.from(item.nonce),
+							},
+						}),
+					),
+				);
+			}
+		}),
+	);
+};
+
+export const getPrivateUserDataEntry = async (publicKey: string) => {
+	const entry = await prisma.userDataEntry.findFirst({
+		where: {
+			user_id: publicKey,
+			domain: Buffer.from([0x0]),
+		},
+		include: {
+			dataItems: true,
+		},
+	});
+
+	return entry?.dataItems
+		? entry.dataItems.map(
+				item => ({ uuid: item.uuid, value: item.value, nonce: item.nonce } as DataEntry),
+		  )
+		: [];
+};
+
+export const getPublicUserDataEntry = async (publicKey: string) => {
+	const entry = await prisma.userDataEntry.findFirst({
+		where: {
+			user_id: publicKey,
+			domain: Buffer.from([0x1]),
+		},
+		include: {
+			dataItems: true,
+		},
+	});
+
+	return entry?.dataItems
+		? entry.dataItems.map(
+				item => ({ uuid: item.uuid, value: item.value, nonce: item.nonce } as DataEntry),
+		  )
+		: [];
+};
+
+export const getSharedUserDataEntry = async (publicKey: string, forPublicKey: string) => {
+	const entries = await prisma.userDataEntry.findMany({
+		where: {
+			user_id: publicKey,
+			domain: Buffer.from(forPublicKey, 'hex'),
+		},
+		include: {
+			dataItems: true,
+		},
+	});
+
+	return entries.reduce<DataEntry[]>((acc, entry) => {
+		const dataEntries = entry.dataItems.map(
+			item =>
+				({
+					uuid: item.uuid,
+					value: item.value,
+					nonce: item.nonce,
+				} as DataEntry),
+		);
+		return acc.concat(dataEntries);
+	}, []);
+};
 
 export const saveBadgeImage = async ({
 	publicKey,
