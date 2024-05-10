@@ -171,12 +171,15 @@ export const saveUserDataEntry = async ({
 
 	await Promise.all(
 		domains.map(async domain => {
+			console.log('Trying to save data for domain', { domain: Buffer.from(domain) });
 			const existingEntry = await prisma.userDataEntry.findFirst({
 				where: {
 					user_id: publicKey,
 					domain: Buffer.from(domain),
 				},
 			});
+
+			console.log('Existing data entry:', existingEntry);
 
 			if (existingEntry) {
 				await Promise.all(
@@ -211,12 +214,15 @@ export const saveUserDataEntry = async ({
 					}),
 				);
 			} else {
+				console.log('Creating a new data entry');
 				const newEntry = await prisma.userDataEntry.create({
 					data: {
 						user_id: publicKey,
 						domain: Buffer.from(domain),
 					},
 				});
+
+				console.log('New entry:', newEntry);
 
 				await Promise.all(
 					data.map(async item =>
