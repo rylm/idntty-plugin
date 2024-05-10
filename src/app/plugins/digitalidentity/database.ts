@@ -191,6 +191,8 @@ export const saveUserDataEntry = async ({
 							},
 						});
 
+						console.log('Existing data item:', existingDataItem);
+
 						if (existingDataItem) {
 							await prisma.dataItem.update({
 								where: {
@@ -202,6 +204,12 @@ export const saveUserDataEntry = async ({
 								},
 							});
 						} else {
+							console.log('Creating a new data item', {
+								userDataEntryId: existingEntry.id,
+								uuid: item.uuid,
+								value: Buffer.from(item.value),
+								nonce: Buffer.from(item.nonce),
+							});
 							await prisma.dataItem.create({
 								data: {
 									userDataEntryId: existingEntry.id,
