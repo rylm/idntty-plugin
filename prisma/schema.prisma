@@ -7,23 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum AuthenticatorTransportFuture {
-  ble
-  cable
-  hybrid
-  internal
-  nfc
-  smart_card
-  usb
-}
-
 model User {
   public_key  String                @id
   username    String
+  layout      Json
   devices     AuthenticatorDevice[]
   badges      Badge[]
   dataEntries UserDataEntry[]       @relation("UserToUserDataEntry")
-  layout      Json
 
   @@map("users")
 }
@@ -31,9 +21,9 @@ model User {
 model UserDataEntry {
   id        Int        @id @default(autoincrement())
   user_id   String
-  user      User       @relation(fields: [user_id], references: [public_key], name: "UserToUserDataEntry")
   domain    Bytes
   dataItems DataItem[] @relation("DataEntryToDataItem")
+  user      User       @relation("UserToUserDataEntry", fields: [user_id], references: [public_key])
 
   @@map("user_data_entries")
 }
@@ -41,10 +31,10 @@ model UserDataEntry {
 model DataItem {
   id              Int           @id @default(autoincrement())
   userDataEntryId Int
-  userDataEntry   UserDataEntry @relation(fields: [userDataEntryId], references: [id], name: "DataEntryToDataItem")
   uuid            String
   value           Bytes
   nonce           Bytes
+  userDataEntry   UserDataEntry @relation("DataEntryToDataItem", fields: [userDataEntryId], references: [id])
 
   @@map("data_items")
 }
@@ -62,8 +52,8 @@ model AuthenticatorDevice {
 
 model AuthenticatorTransport {
   device_id Bytes
-  device    AuthenticatorDevice          @relation(fields: [device_id], references: [credential_id])
   transport AuthenticatorTransportFuture
+  device    AuthenticatorDevice          @relation(fields: [device_id], references: [credential_id])
 
   @@id([device_id, transport])
   @@map("authenticator_transports")
@@ -76,4 +66,25 @@ model Badge {
   user    User   @relation(fields: [user_id], references: [public_key])
 
   @@map("badges")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model userdata {
+  public_key String?
+  domain     String?
+  label      String?
+  value      String?
+  nonce      String?
+
+  @@ignore
+}
+
+enum AuthenticatorTransportFuture {
+  ble
+  cable
+  hybrid
+  internal
+  nfc
+  smart_card
+  usb
 }

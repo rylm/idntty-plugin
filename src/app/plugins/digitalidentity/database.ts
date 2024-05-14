@@ -230,7 +230,7 @@ export const saveUserDataEntry = async ({
 				const newEntry = await prisma.userDataEntry.create({
 					data: {
 						user_id: publicKey,
-						domain: Buffer.from(domain),
+						domain: Buffer.from(new Uint8Array(Object.values(domain))),
 					},
 				});
 
