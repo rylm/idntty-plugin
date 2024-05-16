@@ -8,35 +8,26 @@ datasource db {
 }
 
 model User {
-  public_key  String                @id
-  username    String
-  layout      Json
-  devices     AuthenticatorDevice[]
-  badges      Badge[]
-  dataEntries UserDataEntry[]       @relation("UserToUserDataEntry")
+  public_key String                @id
+  username   String
+  layout     Json
+  devices    AuthenticatorDevice[]
+  badges     Badge[]
+  userData   UserData[]            @relation("UserToUserData")
 
   @@map("users")
 }
 
-model UserDataEntry {
-  id        Int        @id @default(autoincrement())
-  user_id   String
-  domain    Bytes
-  dataItems DataItem[] @relation("DataEntryToDataItem")
-  user      User       @relation("UserToUserDataEntry", fields: [user_id], references: [public_key])
+model UserData {
+  id         Int     @id @default(autoincrement())
+  public_key String
+  domain     String?
+  label      String
+  value      String
+  nonce      String
+  user       User    @relation("UserToUserData", fields: [public_key], references: [public_key])
 
-  @@map("user_data_entries")
-}
-
-model DataItem {
-  id              Int           @id @default(autoincrement())
-  userDataEntryId Int
-  uuid            String
-  value           Bytes
-  nonce           Bytes
-  userDataEntry   UserDataEntry @relation("DataEntryToDataItem", fields: [userDataEntryId], references: [id])
-
-  @@map("data_items")
+  @@map("userdata")
 }
 
 model AuthenticatorDevice {
@@ -66,17 +57,6 @@ model Badge {
   user    User   @relation(fields: [user_id], references: [public_key])
 
   @@map("badges")
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model userdata {
-  public_key String?
-  domain     String?
-  label      String?
-  value      String?
-  nonce      String?
-
-  @@ignore
 }
 
 enum AuthenticatorTransportFuture {
