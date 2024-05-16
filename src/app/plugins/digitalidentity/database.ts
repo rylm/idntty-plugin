@@ -156,7 +156,7 @@ export const saveUserDataEntry = async ({
 	data,
 }: {
 	publicKey: string;
-	domains: Uint8Array[];
+	domains: string[];
 	data: DataEntry[];
 }) => {
 	console.log('Trying to save user data entry', { publicKey, domains, data });
@@ -171,146 +171,103 @@ export const saveUserDataEntry = async ({
 
 	await Promise.all(
 		domains.map(async domain => {
-			console.log('Trying to save data for domain', { domain: Buffer.from(domain) });
-			const existingEntry = await prisma.userDataEntry.findFirst({
-				where: {
-					user_id: publicKey,
-					domain: Buffer.from(domain),
-				},
-			});
+			await Promise.all(
+				data.map(async item => {
+					console.log('Trying to save data item', {
+						uuid: item.uuid,
+						value: item.value,
+						nonce: item.nonce,
+					});
+					const existingEntry = await prisma.userData.findFirst({
+						where: {
+							public_key: publicKey,
+							domain,
+							label: item.uuid,
+						},
+					});
 
-			console.log('Existing data entry:', existingEntry);
+					console.log('Existing entry', existingEntry);
 
-			if (existingEntry) {
-				await Promise.all(
-					data.map(async item => {
-						const itemValue = Buffer.from(new Uint8Array(Object.values(item.value)));
-						const itemNonce = Buffer.from(new Uint8Array(Object.values(item.nonce)));
-
-						console.log('Trying to save data item', {
-							uuid: item.uuid,
-							value: itemValue,
-							nonce: itemNonce,
-						});
-
-						const existingDataItem = await prisma.dataItem.findFirst({
+					if (existingEntry) {
+						await prisma.userData.update({
 							where: {
-								userDataEntryId: existingEntry.id,
-								uuid: item.uuid,
+								id: existingEntry.id,
+							},
+							data: {
+								value: item.value,
+								nonce: item.nonce,
 							},
 						});
-
-						console.log('Existing data item:', existingDataItem);
-
-						if (existingDataItem) {
-							await prisma.dataItem.update({
-								where: {
-									id: existingDataItem.id,
-								},
-								data: {
-									value: itemValue,
-									nonce: itemNonce,
-								},
-							});
-						} else {
-							console.log('Creating a new data item');
-							await prisma.dataItem.create({
-								data: {
-									userDataEntryId: existingEntry.id,
-									uuid: item.uuid,
-									value: itemValue,
-									nonce: itemNonce,
-								},
-							});
-						}
-					}),
-				);
-			} else {
-				console.log('Creating a new data entry');
-				const newEntry = await prisma.userDataEntry.create({
-					data: {
-						user_id: publicKey,
-						domain: Buffer.from(new Uint8Array(Object.values(domain))),
-					},
-				});
-
-				console.log('New entry:', newEntry);
-
-				await Promise.all(
-					data.map(async item =>
-						prisma.dataItem.create({
+					} else {
+						console.log('Creating new entry');
+						await prisma.userData.create({
 							data: {
-								userDataEntryId: newEntry.id,
-								uuid: item.uuid,
-								value: Buffer.from(item.value),
-								nonce: Buffer.from(item.nonce),
+								public_key: publicKey,
+								domain,
+								label: item.uuid,
+								value: item.value,
+								nonce: item.nonce,
 							},
-						}),
-					),
-				);
-			}
+						});
+					}
+				}),
+			);
 		}),
 	);
 };
 
 export const getPrivateUserDataEntry = async (publicKey: string) => {
-	const entry = await prisma.userDataEntry.findFirst({
+	const entries = await prisma.userData.findMany({
 		where: {
-			user_id: publicKey,
-			domain: Buffer.from([0x0]),
-		},
-		include: {
-			dataItems: true,
+			public_key: publicKey,
+			domain: publicKey,
 		},
 	});
 
-	return entry?.dataItems
-		? entry.dataItems.map(
-				item => ({ uuid: item.uuid, value: item.value, nonce: item.nonce } as DataEntry),
-		  )
-		: [];
+	return entries.map(
+		entry =>
+			({
+				uuid: entry.label,
+				value: entry.value,
+				nonce: entry.nonce,
+			} as DataEntry),
+	);
 };
 
 export const getPublicUserDataEntry = async (publicKey: string) => {
-	const entry = await prisma.userDataEntry.findFirst({
+	const entries = await prisma.userData.findMany({
 		where: {
-			user_id: publicKey,
-			domain: Buffer.from([0x1]),
-		},
-		include: {
-			dataItems: true,
+			public_key: publicKey,
+			domain: '',
 		},
 	});
 
-	return entry?.dataItems
-		? entry.dataItems.map(
-				item => ({ uuid: item.uuid, value: item.value, nonce: item.nonce } as DataEntry),
-		  )
-		: [];
+	return entries.map(
+		entry =>
+			({
+				uuid: entry.label,
+				value: entry.value,
+				nonce: entry.nonce,
+			} as DataEntry),
+	);
 };
 
 export const getSharedUserDataEntry = async (publicKey: string, forPublicKey: string) => {
-	const entries = await prisma.userDataEntry.findMany({
+	const entries = await prisma.userData.findMany({
 		where: {
-			user_id: publicKey,
-			domain: Buffer.from(forPublicKey, 'hex'),
-		},
-		include: {
-			dataItems: true,
+			public_key: publicKey,
+			domain: forPublicKey,
 		},
 	});
 
-	return entries.reduce<DataEntry[]>((acc, entry) => {
-		const dataEntries = entry.dataItems.map(
-			item =>
-				({
-					uuid: item.uuid,
-					value: item.value,
-					nonce: item.nonce,
-				} as DataEntry),
-		);
-		return acc.concat(dataEntries);
-	}, []);
+	return entries.map(
+		entry =>
+			({
+				uuid: entry.label,
+				value: entry.value,
+				nonce: entry.nonce,
+			} as DataEntry),
+	);
 };
 
 export const saveBadgeImage = async ({

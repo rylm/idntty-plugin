@@ -11,8 +11,8 @@ import {
 
 export interface DataEntry {
 	uuid: string;
-	value: Uint8Array;
-	nonce: Uint8Array;
+	value: string;
+	nonce: string;
 }
 export const getLayout =
 	() =>
@@ -98,7 +98,7 @@ export const saveData =
 		req: FastifyRequest<{
 			Body: {
 				publicKey: string;
-				domains: Uint8Array[];
+				domains: string[];
 				data: DataEntry[];
 			};
 		}>,
