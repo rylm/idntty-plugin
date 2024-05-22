@@ -2,32 +2,14 @@ import { BasePlugin } from 'lisk-sdk';
 
 import Fastify from 'fastify';
 import fastifyCors from '@fastify/cors';
-import fastifyCookie from '@fastify/cookie';
-import fastifySession from '@fastify/session';
 
 import { Endpoint } from './endpoint';
 import * as controllers from './controllers';
-
-declare module 'fastify' {
-	interface Session {
-		currentChallenge: string | undefined;
-		publicKey: string | undefined;
-		username: string | undefined;
-	}
-}
 
 const server = Fastify({ logger: true });
 server.register(fastifyCors, {
 	origin: true,
 	credentials: true,
-});
-server.register(fastifyCookie);
-server.register(fastifySession, {
-	secret: process.env.SESSION_SECRET ?? '',
-	cookie: {
-		sameSite: 'none',
-		secure: false,
-	},
 });
 
 export class DigitalidentityPlugin extends BasePlugin {
