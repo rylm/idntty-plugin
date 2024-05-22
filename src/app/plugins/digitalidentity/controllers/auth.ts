@@ -24,6 +24,8 @@ import {
 	createUser,
 	createAuthenticatorDevice,
 	updateAuthenticatorDevice,
+	saveUserChallenge,
+	getUserChallenge,
 } from '../database';
 
 const rpName = 'WebAuthn Server';
@@ -38,12 +40,11 @@ export const register =
 		req: FastifyRequest<{
 			Querystring: {
 				publicKey: string;
-				username: string;
 			};
 		}>,
 		res: FastifyReply,
 	): Promise<object> => {
-		const { publicKey, username } = req.query;
+		const { publicKey } = req.query;
 
 		const dbUser = await getUserWithDevicesByPublicKey(publicKey);
 
@@ -61,7 +62,7 @@ export const register =
 			rpName,
 			rpID,
 			userID: publicKey,
-			userName: username,
+			userName: publicKey,
 			timeout: 60000,
 			attestationType: 'none',
 			excludeCredentials,
@@ -72,13 +73,7 @@ export const register =
 		});
 		console.log('Generated registration options:', options);
 
-		req.session.set('currentChallenge', options.challenge);
-		req.session.set('publicKey', publicKey);
-		req.session.set('username', username);
-
-		console.log(req.session.get('currentChallenge'));
-		console.log(req.session.get('publicKey'));
-		console.log(req.session.get('username'));
+		await saveUserChallenge(publicKey, options.challenge);
 
 		return res.send(options);
 	};
@@ -87,11 +82,11 @@ export const registerVerify =
 	() =>
 	async (
 		req: FastifyRequest<{
-			Body: RegistrationResponseJSON;
+			Body: { publicKey: string; registrationResponse: RegistrationResponseJSON };
 		}>,
 		res: FastifyReply,
 	) => {
-		const expectedChallenge = req.session.get('currentChallenge');
+		const expectedChallenge = await getUserChallenge(req.body.publicKey);
 
 		if (!expectedChallenge) {
 			return res.status(400).send({ error: 'Challenge not found or expired.' });
@@ -101,7 +96,7 @@ export const registerVerify =
 		let webAuthnPublicKey: Uint8Array = new Uint8Array();
 		try {
 			verification = await verifyRegistrationResponse({
-				response: req.body,
+				response: req.body.registrationResponse,
 				expectedChallenge: `${expectedChallenge}`,
 				expectedOrigin: origin,
 				expectedRPID: rpID,
@@ -113,33 +108,29 @@ export const registerVerify =
 			if (verified && registrationInfo) {
 				const { credentialPublicKey, credentialID, counter } = registrationInfo;
 
-				if (!req.session.get('publicKey') || !req.session.get('username')) {
-					return res.status(400).send({ error: 'Public key or username not found' });
-				}
-
-				if (!req.body.response.transports) {
+				if (!req.body.registrationResponse.response.transports) {
 					return res.status(400).send({ error: 'Transports not found' });
 				}
 
-				let user = await getUserByPublicKey(req.session.get('publicKey'));
+				let user = await getUserByPublicKey(req.body.publicKey);
 
 				if (!user) {
 					user = await createUser({
-						publicKey: req.session.get('publicKey'),
-						username: req.session.get('username'),
+						publicKey: req.body.publicKey,
+						username: req.body.publicKey,
 						credentialID,
 						credentialPublicKey,
 						counter,
-						transports: req.body.response.transports,
+						transports: req.body.registrationResponse.response.transports,
 						layout: {},
 					});
 				} else {
 					await createAuthenticatorDevice({
-						userID: req.session.get('publicKey'),
+						userID: req.body.publicKey,
 						credentialID,
 						credentialPublicKey,
 						counter,
-						transports: req.body.response.transports,
+						transports: req.body.registrationResponse.response.transports,
 					});
 				}
 
@@ -151,9 +142,7 @@ export const registerVerify =
 			return res.status(400).send({ error: _error.message });
 		}
 
-		req.session.set('currentChallenge', undefined);
-		req.session.set('publicKey', undefined);
-		req.session.set('username', undefined);
+		await saveUserChallenge(req.body.publicKey, null);
 
 		const response = {
 			verified: verification.verified,
@@ -193,21 +182,26 @@ export const login =
 		});
 		console.log('Generated authentication options:', options);
 
-		req.session.set('currentChallenge', options.challenge);
-		req.session.set('publicKey', publicKey);
+		await saveUserChallenge(publicKey, options.challenge);
 
 		return res.send(options);
 	};
 
 export const loginVerify =
-	() => async (req: FastifyRequest<{ Body: AuthenticationResponseJSON }>, res: FastifyReply) => {
-		const expectedChallenge = req.session.get('currentChallenge');
+	() =>
+	async (
+		req: FastifyRequest<{
+			Body: { publicKey: string; authenticationResponse: AuthenticationResponseJSON };
+		}>,
+		res: FastifyReply,
+	) => {
+		const expectedChallenge = await getUserChallenge(req.body.publicKey);
 
 		if (!expectedChallenge) {
 			return res.status(400).send({ error: 'Challenge not found or expired.' });
 		}
 
-		const bodyCredentialID = isoBase64URL.toBuffer(req.body.rawId);
+		const bodyCredentialID = isoBase64URL.toBuffer(req.body.authenticationResponse.rawId);
 
 		const dbAuthenticator = await getAuthenticatorDeviceByCredentialID(bodyCredentialID);
 
@@ -218,7 +212,7 @@ export const loginVerify =
 		let verification: VerifiedAuthenticationResponse;
 		try {
 			verification = await verifyAuthenticationResponse({
-				response: req.body,
+				response: req.body.authenticationResponse,
 				expectedChallenge: `${expectedChallenge}`,
 				expectedOrigin: origin,
 				expectedRPID: rpID,
@@ -246,7 +240,7 @@ export const loginVerify =
 			});
 		}
 
-		req.session.set('currentChallenge', undefined);
+		await saveUserChallenge(req.body.publicKey, null);
 
 		const response = {
 			verified,

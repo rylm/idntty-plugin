@@ -150,6 +150,34 @@ export const updateUserLayout = async ({
 		},
 	});
 
+export const saveUserChallenge = async (publicKey: string, challenge: string | null) =>
+	prisma.userChallenge.upsert({
+		where: {
+			public_key: publicKey,
+		},
+		create: {
+			public_key: publicKey,
+			challenge,
+		},
+		update: {
+			challenge,
+		},
+	});
+
+export const getUserChallenge = async (publicKey: string) => {
+	const user = await prisma.userChallenge.findUnique({
+		where: {
+			public_key: publicKey,
+		},
+	});
+
+	if (!user) {
+		throw new Error('Challenge not found');
+	}
+
+	return user.challenge;
+};
+
 export const saveUserDataEntry = async ({
 	publicKey,
 	domains,

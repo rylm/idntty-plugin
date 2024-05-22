@@ -50,6 +50,14 @@ model AuthenticatorTransport {
   @@map("authenticator_transports")
 }
 
+model UserChallenge {
+  id         Int     @id @default(autoincrement())
+  public_key String  @unique
+  challenge  String?
+
+  @@map("user_challenges")
+}
+
 model Badge {
   id      Int    @id @default(autoincrement())
   fileKey String
