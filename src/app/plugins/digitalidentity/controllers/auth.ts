@@ -283,7 +283,8 @@ export const jwtVerificationPreHandler =
 		const publicKey = await toPublicKeyObject(Buffer.from(rawPublicKey, 'hex'));
 
 		try {
-			await verifyJWT(jwt, publicKey, rawPublicKey);
+			const verified = await verifyJWT(jwt, publicKey, rawPublicKey);
+			console.log('JWT verification:', verified);
 			return;
 		} catch (err) {
 			res.status(401).send({ error: 'Invalid token' });
