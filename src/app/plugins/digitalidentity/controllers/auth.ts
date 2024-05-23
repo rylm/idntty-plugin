@@ -28,6 +28,8 @@ import {
 	getUserChallenge,
 } from '../database';
 
+import { toPublicKeyObject, verifyJWT } from '../../../../lib/utils';
+
 const rpName = 'WebAuthn Server';
 // const rpID = 'd1ub87pewhnkr8.cloudfront.net';
 const rpID = 'localhost';
@@ -247,4 +249,43 @@ export const loginVerify =
 			webAuthnPublicKey: isoUint8Array.toHex(dbAuthenticator.credential_public_key),
 		};
 		return res.send(response);
+	};
+
+// FIXME: The types don't work here, have to check manually
+type RequestWithPublicKey = (
+	| { Body: { publicKey: string } }
+	| { Querystring: { publicKey: string } }
+) &
+	Record<string, unknown>;
+export const jwtVerificationPreHandler =
+	() => async (req: FastifyRequest<RequestWithPublicKey>, res: FastifyReply) => {
+		const authHeader = req.headers.authorization;
+		if (!authHeader?.startsWith('Bearer ')) {
+			res.status(401).send({ error: 'Unauthorized' });
+			return;
+		}
+
+		let rawPublicKey: string | undefined;
+		if (req.query && typeof req.query === 'object' && 'forPublicKey' in req.query) {
+			rawPublicKey = (req.query as { forPublicKey: string }).forPublicKey;
+		} else if (req.body && typeof req.body === 'object' && 'publicKey' in req.body) {
+			rawPublicKey = (req.body as { publicKey: string }).publicKey;
+		} else if (req.query && typeof req.query === 'object' && 'publicKey' in req.query) {
+			rawPublicKey = (req.query as { publicKey: string }).publicKey;
+		}
+
+		if (!rawPublicKey) {
+			res.status(400).send({ error: 'publicKey not provided' });
+			return;
+		}
+
+		const jwt = authHeader.split(' ')[1];
+		const publicKey = await toPublicKeyObject(Buffer.from(rawPublicKey, 'hex'));
+
+		try {
+			await verifyJWT(jwt, publicKey, rawPublicKey);
+			return;
+		} catch (err) {
+			res.status(401).send({ error: 'Invalid token' });
+		}
 	};

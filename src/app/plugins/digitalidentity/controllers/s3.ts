@@ -11,10 +11,10 @@ const s3Client = new S3Client({ region: 'eu-west-1' });
 export const getUploadUrl =
 	() =>
 	async (
-		req: FastifyRequest<{ Body: { userID: string; fileName: string; contentType: string } }>,
+		req: FastifyRequest<{ Body: { publicKey: string; fileName: string; contentType: string } }>,
 		res: FastifyReply,
 	) => {
-		const { userID, fileName, contentType } = req.body;
+		const { publicKey, fileName, contentType } = req.body;
 
 		const newFileName = `${uuidv4()}-${fileName}`;
 
@@ -28,7 +28,7 @@ export const getUploadUrl =
 			const url = await getSignedUrl(s3Client, command, {
 				expiresIn: 3600,
 			});
-			await saveBadgeImage({ publicKey: userID, fileKey: newFileName });
+			await saveBadgeImage({ publicKey, fileKey: newFileName });
 			return res.send({ url, newFileName });
 		} catch (error) {
 			console.error(error);

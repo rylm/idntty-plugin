@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+
 import { BasePlugin } from 'lisk-sdk';
 
 import Fastify from 'fastify';
@@ -29,14 +31,42 @@ export class DigitalidentityPlugin extends BasePlugin {
 		server.post('/login/verify', controllers.auth.loginVerify());
 
 		server.get('/layout', controllers.data.getLayout());
-		server.post('/layout/update', controllers.data.updateLayout());
+		server.post(
+			'/layout/update',
+			{ preHandler: controllers.auth.jwtVerificationPreHandler() },
+			controllers.data.updateLayout(),
+		);
 
-		server.get('/data/private', controllers.data.getPrivateData());
+		server.get(
+			'/data/private',
+			{
+				preHandler: controllers.auth.jwtVerificationPreHandler(),
+			},
+			controllers.data.getPrivateData(),
+		);
 		server.get('/data/public', controllers.data.getPublicData());
-		server.get('/data/shared', controllers.data.getSharedData());
-		server.post('/data/save', controllers.data.saveData());
+		server.get(
+			'/data/shared',
+			{
+				preHandler: controllers.auth.jwtVerificationPreHandler(),
+			},
+			controllers.data.getSharedData(),
+		);
+		server.post(
+			'/data/save',
+			{
+				preHandler: controllers.auth.jwtVerificationPreHandler(),
+			},
+			controllers.data.saveData(),
+		);
 
-		server.post('/get-upload-url', controllers.s3.getUploadUrl());
+		server.post(
+			'/get-upload-url',
+			{
+				preHandler: controllers.auth.jwtVerificationPreHandler(),
+			},
+			controllers.s3.getUploadUrl(),
+		);
 		server.get('/get-uploaded-images', controllers.s3.getUploadedImages());
 
 		server.listen({ port: 8000 });
