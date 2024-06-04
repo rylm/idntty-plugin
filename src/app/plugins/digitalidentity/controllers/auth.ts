@@ -128,7 +128,7 @@ export const registerVerify =
 					});
 				} else {
 					await createAuthenticatorDevice({
-						userID: req.body.publicKey,
+						publicKey: req.body.publicKey,
 						credentialID,
 						credentialPublicKey,
 						counter,
