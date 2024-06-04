@@ -285,6 +285,9 @@ export const getSharedUserDataEntry = async (publicKey: string, forPublicKey: st
 		where: {
 			public_key: publicKey,
 			domain: forPublicKey,
+			NOT: {
+				public_key: forPublicKey,
+			},
 		},
 	});
 
