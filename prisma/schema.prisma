@@ -34,8 +34,8 @@ model AuthenticatorDevice {
   credential_id         Bytes                    @id
   credential_public_key Bytes
   counter               Int
-  user_id               String
-  user                  User                     @relation(fields: [user_id], references: [public_key])
+  public_key            String
+  user                  User                     @relation(fields: [public_key], references: [public_key])
   transports            AuthenticatorTransport[]
 
   @@map("authenticator_devices")
@@ -59,10 +59,10 @@ model UserChallenge {
 }
 
 model Badge {
-  id      Int    @id @default(autoincrement())
-  fileKey String
-  user_id String
-  user    User   @relation(fields: [user_id], references: [public_key])
+  id         Int    @id @default(autoincrement())
+  fileKey    String
+  public_key String
+  user       User   @relation(fields: [public_key], references: [public_key])
 
   @@map("badges")
 }

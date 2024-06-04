@@ -75,13 +75,13 @@ export const createUser = async ({
 	});
 
 export const createAuthenticatorDevice = async ({
-	userID,
+	publicKey,
 	credentialID,
 	credentialPublicKey,
 	counter,
 	transports,
 }: {
-	userID: string;
+	publicKey: string;
 	credentialID: Uint8Array;
 	credentialPublicKey: Uint8Array;
 	counter: number;
@@ -89,7 +89,7 @@ export const createAuthenticatorDevice = async ({
 }) =>
 	prisma.authenticatorDevice.create({
 		data: {
-			user_id: userID,
+			public_key: publicKey,
 			credential_id: Buffer.from(credentialID),
 			credential_public_key: Buffer.from(credentialPublicKey),
 			counter,
@@ -307,7 +307,7 @@ export const saveBadgeImage = async ({
 }) =>
 	prisma.badge.create({
 		data: {
-			user_id: publicKey,
+			public_key: publicKey,
 			fileKey,
 		},
 	});
@@ -315,6 +315,6 @@ export const saveBadgeImage = async ({
 export const getBadgeImagesByPublicKey = async (publicKey: string) =>
 	prisma.badge.findMany({
 		where: {
-			user_id: publicKey,
+			public_key: publicKey,
 		},
 	});
