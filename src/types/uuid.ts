@@ -1,10 +1,10 @@
 type InputBuffer = ArrayLike<number>;
 
 interface RandomOptions {
-	random?: InputBuffer | undefined;
+    random?: InputBuffer | undefined;
 }
 interface RngOptions {
-	rng?: (() => InputBuffer) | undefined;
+    rng?: (() => InputBuffer) | undefined;
 }
 
 export type V4Options = RandomOptions | RngOptions;

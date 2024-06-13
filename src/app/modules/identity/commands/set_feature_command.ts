@@ -4,25 +4,24 @@ import {
     BaseCommand,
     CommandVerifyContext,
     CommandExecuteContext,
-	VerificationResult,
-	VerifyStatus,
+    VerificationResult,
+    VerifyStatus,
 } from 'lisk-sdk';
 
-interface Params {
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface Params {}
 
 export class SetFeatureCommand extends BaseCommand {
-	public schema = {
-		$id: 'SetFeatureCommand',
-		type: 'object',
-		properties: {},
-	};
+    public schema = {
+        $id: 'SetFeatureCommand',
+        type: 'object',
+        properties: {},
+    };
 
-	// eslint-disable-next-line @typescript-eslint/require-await
-	public async verify(_context: CommandVerifyContext<Params>): Promise<VerificationResult> {
-		return { status: VerifyStatus.OK };
-	}
+    // eslint-disable-next-line @typescript-eslint/require-await
+    public async verify(_context: CommandVerifyContext<Params>): Promise<VerificationResult> {
+        return { status: VerifyStatus.OK };
+    }
 
-	public async execute(_context: CommandExecuteContext<Params>): Promise<void> {
-	}
+    public async execute(_context: CommandExecuteContext<Params>): Promise<void> {}
 }

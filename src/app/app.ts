@@ -3,12 +3,12 @@ import { registerModules } from './modules';
 import { registerPlugins } from './plugins';
 
 export const getApplication = (config: PartialApplicationConfig): Application => {
-	const { app } = Application.defaultApplication(config);
+    const { app } = Application.defaultApplication(config);
 
-	console.log('!!!! app');
+    console.log('!!!! app');
 
-	registerModules(app);
-	registerPlugins(app);
+    registerModules(app);
+    registerPlugins(app);
 
-	return app;
+    return app;
 };
