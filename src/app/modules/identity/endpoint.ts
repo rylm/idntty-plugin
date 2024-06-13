@@ -19,4 +19,17 @@ export class IdentityEndpoint extends BaseEndpoint {
 
         return account;
     }
+
+    public async getAllAccounts(ctx: ModuleEndpointContext): Promise<
+        {
+            key: Buffer;
+            value: AccountStoreData;
+        }[]
+    > {
+        const accountSubstore = this.stores.get(AccountStore);
+
+        const accounts = await accountSubstore.iterate(ctx, {});
+
+        return accounts;
+    }
 }
