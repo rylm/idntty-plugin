@@ -32,9 +32,10 @@ import { toPublicKeyObject, verifyJWT } from '../../../../lib/utils';
 
 const rpName = 'WebAuthn Server';
 // const rpID = 'd1ub87pewhnkr8.cloudfront.net';
-const rpID = 'localhost';
-// const origin = `https://${rpID}`;
-const origin = `http://${rpID}:3000`;
+// const rpID = 'localhost';
+const rpID = 'idntty-app.vercel.app';
+const origin = `https://${rpID}`;
+// const origin = `http://${rpID}:3000`;
 
 export const register =
 	() =>
