@@ -11,6 +11,7 @@ import { IdentityEndpoint } from './endpoint';
 import { IdentityMethod } from './method';
 import { configSchema } from './schema';
 import { ModuleConfigJSON } from './types';
+import { AccountStore } from './stores/account';
 
 export const defaultConfig = {
     features: [],
@@ -27,10 +28,10 @@ export class IdentityModule extends BaseModule {
         new ValidateFeatureCommand(this.stores, this.events),
     ];
 
-    // public constructor() {
-    // 	super();
-    // 	// registeration of stores and events
-    // }
+    public constructor() {
+        super();
+        this.stores.register(AccountStore, new AccountStore(this.name, 0));
+    }
 
     public metadata(): ModuleMetadata {
         return {
