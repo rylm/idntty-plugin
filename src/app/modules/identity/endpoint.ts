@@ -28,7 +28,11 @@ export class IdentityEndpoint extends BaseEndpoint {
     > {
         const accountSubstore = this.stores.get(AccountStore);
 
+        console.log('Got accountSubstore: ', accountSubstore);
+
         const accounts = await accountSubstore.iterate(ctx, {});
+
+        console.log('Got accounts: ', accounts);
 
         return accounts;
     }
