@@ -65,6 +65,14 @@ export class SetFeatureCommand extends BaseCommand {
                     });
                 }
             }
+
+            if (isUnique) {
+                await accountSubstore.set(_context, senderAddress, {
+                    features: [...accountFeatures, feature],
+                });
+            } else {
+                // Delete validated features for updated
+            }
         }
     }
 }
