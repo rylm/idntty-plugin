@@ -32,3 +32,30 @@ export const configSchema = {
     },
     default: { features: [], verifications: [] },
 };
+
+export const setFeatureSchema = {
+    $id: 'identity/setFeature-params',
+    title: 'Command schema to set or update account features for identity module',
+    type: 'object',
+    required: ['features'],
+    properties: {
+        features: {
+            fieldNumber: 1,
+            type: 'array',
+            minItems: 1,
+            maxItems: 16,
+            items: {
+                type: 'object',
+                required: ['label', 'value'],
+                properties: {
+                    label: { fieldNumber: 1, dataType: 'string', maxLength: 16 },
+                    value: { fieldNumber: 2, dataType: 'bytes', maxLength: 32 },
+                },
+            },
+        },
+    },
+};
+
+export const invalidateFeatureSchema = {};
+export const removeFeatureSchema = {};
+export const validateFeatureSchema = {};

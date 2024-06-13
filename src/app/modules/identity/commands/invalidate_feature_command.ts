@@ -8,8 +8,11 @@ import {
     VerifyStatus,
 } from 'lisk-sdk';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Params {}
+interface Params {
+    features: {
+        label: string;
+    }[];
+}
 
 export class InvalidateFeatureCommand extends BaseCommand {
     public schema = {
