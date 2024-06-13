@@ -9,68 +9,68 @@ import { uuidv4 } from '../../../../lib/utils';
 const s3Client = new S3Client({ region: 'eu-west-1' });
 
 export const getUploadUrl =
-	() =>
-	async (
-		req: FastifyRequest<{ Body: { publicKey: string; fileName: string; contentType: string } }>,
-		res: FastifyReply,
-	) => {
-		const { publicKey, fileName, contentType } = req.body;
+    () =>
+    async (
+        req: FastifyRequest<{ Body: { publicKey: string; fileName: string; contentType: string } }>,
+        res: FastifyReply,
+    ) => {
+        const { publicKey, fileName, contentType } = req.body;
 
-		const newFileName = `${uuidv4()}-${fileName}`;
+        const newFileName = `${uuidv4()}-${fileName}`;
 
-		const command = new PutObjectCommand({
-			Bucket: 'io.idntty.cdn',
-			Key: newFileName,
-			ContentType: contentType,
-		});
+        const command = new PutObjectCommand({
+            Bucket: 'io.idntty.cdn',
+            Key: newFileName,
+            ContentType: contentType,
+        });
 
-		try {
-			const url = await getSignedUrl(s3Client, command, {
-				expiresIn: 3600,
-			});
-			await saveBadgeImage({ publicKey, fileKey: newFileName });
-			return res.send({ url, newFileName });
-		} catch (error) {
-			console.error(error);
-			return res.status(500).send({ error: `Error generating a presigned URL: ${error}` });
-		}
-	};
+        try {
+            const url = await getSignedUrl(s3Client, command, {
+                expiresIn: 3600,
+            });
+            await saveBadgeImage({ publicKey, fileKey: newFileName });
+            return res.send({ url, newFileName });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send({ error: `Error generating a presigned URL: ${error}` });
+        }
+    };
 
 export const getUploadedImages =
-	() =>
-	async (
-		req: FastifyRequest<{
-			Querystring: { userID: string };
-		}>,
-		res: FastifyReply,
-	) => {
-		const { userID } = req.query;
+    () =>
+    async (
+        req: FastifyRequest<{
+            Querystring: { userID: string };
+        }>,
+        res: FastifyReply,
+    ) => {
+        const { userID } = req.query;
 
-		if (!userID) {
-			return res.status(400).send({ error: 'User ID not found' });
-		}
+        if (!userID) {
+            return res.status(400).send({ error: 'User ID not found' });
+        }
 
-		try {
-			const badges = await getBadgeImagesByPublicKey(userID);
+        try {
+            const badges = await getBadgeImagesByPublicKey(userID);
 
-			const urls = await Promise.all(
-				badges.map(async badge => {
-					const command = new GetObjectCommand({
-						Bucket: 'io.idntty.cdn',
-						Key: badge.fileKey,
-					});
+            const urls = await Promise.all(
+                badges.map(async badge => {
+                    const command = new GetObjectCommand({
+                        Bucket: 'io.idntty.cdn',
+                        Key: badge.fileKey,
+                    });
 
-					const url = await getSignedUrl(s3Client, command, {
-						expiresIn: 3600,
-					});
+                    const url = await getSignedUrl(s3Client, command, {
+                        expiresIn: 3600,
+                    });
 
-					return url;
-				}),
-			);
+                    return url;
+                }),
+            );
 
-			return res.send({ urls });
-		} catch (error) {
-			console.error(error);
-			return res.status(500).send({ error: `Error getting images: ${error}` });
-		}
-	};
+            return res.send({ urls });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send({ error: `Error getting images: ${error}` });
+        }
+    };
