@@ -56,6 +56,25 @@ export const setFeatureSchema = {
     },
 };
 
+export interface CreateHelloParams {
+    message: string;
+}
+
+export const createHelloSchema = {
+    $id: 'hello/createHello-params',
+    title: 'CreateHelloCommand transaction parameter for the Hello module',
+    type: 'object',
+    required: ['message'],
+    properties: {
+        message: {
+            dataType: 'string',
+            fieldNumber: 1,
+            minLength: 3,
+            maxLength: 256,
+        },
+    },
+};
+
 export const invalidateFeatureSchema = {};
 export const removeFeatureSchema = {};
 export const validateFeatureSchema = {};
