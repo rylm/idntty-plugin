@@ -3,7 +3,7 @@
 
 import { validator } from '@liskhq/lisk-validator';
 import { BaseModule, ModuleInitArgs, ModuleMetadata, utils } from 'lisk-sdk';
-import { CreateHelloCommand } from "./commands/create_hello_command";
+import { CreateHelloCommand } from './commands/create_hello_command';
 import { InvalidateFeatureCommand } from './commands/invalidate_feature_command';
 import { RemoveFeatureCommand } from './commands/remove_feature_command';
 import { SetFeatureCommand } from './commands/set_feature_command';
@@ -23,11 +23,12 @@ export class IdentityModule extends BaseModule {
     public endpoint = new IdentityEndpoint(this.stores, this.offchainStores);
     public method = new IdentityMethod(this.stores, this.events);
     public commands = [
-                new SetFeatureCommand(this.stores, this.events),
-                new InvalidateFeatureCommand(this.stores, this.events),
-                new RemoveFeatureCommand(this.stores, this.events),
-                new ValidateFeatureCommand(this.stores, this.events),
-            , new CreateHelloCommand(this.stores, this.events)];
+        new SetFeatureCommand(this.stores, this.events),
+        new InvalidateFeatureCommand(this.stores, this.events),
+        new RemoveFeatureCommand(this.stores, this.events),
+        new ValidateFeatureCommand(this.stores, this.events),
+        new CreateHelloCommand(this.stores, this.events),
+    ];
 
     public constructor() {
         super();
