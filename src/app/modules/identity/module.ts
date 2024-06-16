@@ -12,6 +12,7 @@ import { IdentityEndpoint } from './endpoint';
 import { IdentityMethod } from './method';
 import { configSchema } from './schema';
 import { AccountStore } from './stores/account';
+import { MessageStore } from './stores/message';
 import { ModuleConfigJSON } from './types';
 
 export const defaultConfig = {
@@ -33,6 +34,7 @@ export class IdentityModule extends BaseModule {
     public constructor() {
         super();
         this.stores.register(AccountStore, new AccountStore(this.name, 0));
+        this.stores.register(MessageStore, new MessageStore(this.name, 1));
     }
 
     public metadata(): ModuleMetadata {
