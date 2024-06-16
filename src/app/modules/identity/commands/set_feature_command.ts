@@ -15,7 +15,7 @@ import { setFeatureSchema } from '../schema';
 interface Params {
     features: {
         label: string;
-        value: Uint8Array;
+        value: string;
     }[];
 }
 
@@ -50,7 +50,7 @@ export class SetFeatureCommand extends BaseCommand {
             for (const accountFeature of accountFeatures) {
                 if (
                     feature.label === accountFeature.label &&
-                    Buffer.compare(feature.value, accountFeature.value) === 0
+                    feature.value === accountFeature.value
                 ) {
                     throw new Error(
                         'State modification error: The new value must be different from the existing',

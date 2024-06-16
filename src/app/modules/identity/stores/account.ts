@@ -3,7 +3,7 @@ import { BaseStore } from 'lisk-sdk';
 export interface AccountStoreData {
     features: {
         label: string;
-        value: Uint8Array;
+        value: string;
     }[];
 }
 
@@ -20,7 +20,7 @@ export const accountStoreSchema = {
                 required: ['label', 'value'],
                 properties: {
                     label: { fieldNumber: 1, dataType: 'string' },
-                    value: { fieldNumber: 2, dataType: 'bytes' },
+                    value: { fieldNumber: 2, dataType: 'string' },
                 },
             },
         },

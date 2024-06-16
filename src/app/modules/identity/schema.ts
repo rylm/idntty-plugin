@@ -12,7 +12,7 @@ export const configSchema = {
                 required: ['label', 'value'],
                 properties: {
                     label: { fieldNumber: 1, dataType: 'string' },
-                    value: { fieldNumber: 2, dataType: 'bytes' },
+                    value: { fieldNumber: 2, dataType: 'string' },
                 },
             },
         },
@@ -49,7 +49,7 @@ export const setFeatureSchema = {
                 required: ['label', 'value'],
                 properties: {
                     label: { fieldNumber: 1, dataType: 'string', maxLength: 16 },
-                    value: { fieldNumber: 2, dataType: 'bytes', maxLength: 32 },
+                    value: { fieldNumber: 2, dataType: 'string', maxLength: 32 },
                 },
             },
         },
