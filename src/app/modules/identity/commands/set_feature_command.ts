@@ -73,8 +73,6 @@ export class SetFeatureCommand extends BaseCommand {
             } else {
                 // Delete validated features for updated
             }
-
-            _context.logger.info(await accountSubstore.iterate(_context, {}));
         }
     }
 }

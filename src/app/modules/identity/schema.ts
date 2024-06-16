@@ -60,11 +60,23 @@ export const createHelloSchema = {
     $id: 'identity/createHello-params',
     title: 'CreateHelloCommand transaction parameter for the Hello module',
     type: 'object',
-    required: ['message'],
+    required: ['message', 'label', 'value'],
     properties: {
         message: {
             dataType: 'string',
             fieldNumber: 1,
+            minLength: 3,
+            maxLength: 256,
+        },
+        label: {
+            dataType: 'string',
+            fieldNumber: 2,
+            minLength: 3,
+            maxLength: 256,
+        },
+        value: {
+            dataType: 'string',
+            fieldNumber: 3,
             minLength: 3,
             maxLength: 256,
         },

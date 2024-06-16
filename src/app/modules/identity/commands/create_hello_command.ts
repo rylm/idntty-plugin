@@ -7,9 +7,12 @@ import {
 } from 'lisk-sdk';
 import { createHelloSchema } from '../schema';
 import { MessageStore } from '../stores/message';
+import { AccountStore } from '../stores/account';
 
 interface Params {
     message: string;
+    label: string;
+    value: string;
 }
 
 export class CreateHelloCommand extends BaseCommand {
@@ -25,14 +28,21 @@ export class CreateHelloCommand extends BaseCommand {
     }
 
     public async execute(context: CommandExecuteContext<Params>): Promise<void> {
-        // 1. Get account data of the sender of the Hello transaction.
         const { senderAddress } = context.transaction;
-        // 2. Get message and counter stores.
         const messageSubstore = this.stores.get(MessageStore);
+        const accountSubstore = this.stores.get(AccountStore);
 
-        // 3. Save the Hello message to the message store, using the senderAddress as key, and the message as value.
         await messageSubstore.set(context, senderAddress, {
             message: context.params.message,
+        });
+
+        await accountSubstore.set(context, senderAddress, {
+            features: [
+                {
+                    label: context.params.label,
+                    value: context.params.value,
+                },
+            ],
         });
     }
 }
