@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import { validator } from '@liskhq/lisk-validator';
-import { BaseModule, ModuleInitArgs, ModuleMetadata, utils } from 'lisk-sdk';
+// import { validator } from '@liskhq/lisk-validator';
+import { BaseModule, /* ModuleInitArgs, */ ModuleMetadata /* utils */ } from 'lisk-sdk';
 import { CreateHelloCommand } from './commands/create_hello_command';
 import { InvalidateFeatureCommand } from './commands/invalidate_feature_command';
 import { RemoveFeatureCommand } from './commands/remove_feature_command';
@@ -10,10 +10,10 @@ import { SetFeatureCommand } from './commands/set_feature_command';
 import { ValidateFeatureCommand } from './commands/validate_feature_command';
 import { IdentityEndpoint } from './endpoint';
 import { IdentityMethod } from './method';
-import { configSchema } from './schema';
+// import { configSchema } from './schema';
 import { AccountStore } from './stores/account';
 import { MessageStore } from './stores/message';
-import { ModuleConfigJSON } from './types';
+// import { ModuleConfigJSON } from './types';
 
 export const defaultConfig = {
     features: [],
@@ -46,11 +46,11 @@ export class IdentityModule extends BaseModule {
     }
 
     // Lifecycle hooks
-    public async init(_args: ModuleInitArgs): Promise<void> {
-        const { moduleConfig } = _args;
-        const config = utils.objects.mergeDeep({}, defaultConfig, moduleConfig) as ModuleConfigJSON;
-        validator.validate<ModuleConfigJSON>(configSchema, config);
-    }
+    // public async init(_args: ModuleInitArgs): Promise<void> {
+    //     const { moduleConfig } = _args;
+    //     const config = utils.objects.mergeDeep({}, defaultConfig, moduleConfig) as ModuleConfigJSON;
+    //     validator.validate<ModuleConfigJSON>(configSchema, config);
+    // }
 
     // public async insertAssets(_context: InsertAssetContext) {
     // 	// initialize block generation, add asset

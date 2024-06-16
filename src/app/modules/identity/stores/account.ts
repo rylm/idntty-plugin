@@ -1,10 +1,7 @@
 import { BaseStore } from 'lisk-sdk';
 
 export interface AccountStoreData {
-    features: {
-        label: string;
-        value: string;
-    }[];
+    features: Record<string, string>;
 }
 
 export const accountStoreSchema = {

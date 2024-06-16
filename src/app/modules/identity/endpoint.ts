@@ -31,7 +31,15 @@ export class IdentityEndpoint extends BaseEndpoint {
 
         console.log('Got accountSubstore: ', accountSubstore);
 
-        const accounts = await accountSubstore.iterate(ctx, {});
+        const options = {
+            limit: 10,
+            gte: Buffer.from(new Uint8Array([0])),
+            lte: Buffer.from(new Uint8Array(new Array(256).fill(255))),
+        };
+
+        console.log('Options: ', options);
+
+        const accounts = await accountSubstore.iterate(ctx, options);
 
         console.log('Got accounts: ', accounts);
 
