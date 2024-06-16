@@ -1,37 +1,37 @@
-export const configSchema = {
-    $id: '/identity/config',
-    title: 'Identity module account schema',
-    type: 'object',
-    properties: {
-        features: {
-            fieldNumber: 1,
-            type: 'array',
-            maxItems: 256,
-            items: {
-                type: 'object',
-                required: ['label', 'value'],
-                properties: {
-                    label: { fieldNumber: 1, dataType: 'string' },
-                    value: { fieldNumber: 2, dataType: 'string' },
-                },
-            },
-        },
-        verifications: {
-            fieldNumber: 2,
-            type: 'array',
-            items: {
-                type: 'object',
-                required: ['label', 'account', 'tx'],
-                properties: {
-                    label: { fieldNumber: 1, dataType: 'string' },
-                    account: { fieldNumber: 2, dataType: 'bytes' },
-                    tx: { fieldNumber: 3, dataType: 'bytes' },
-                },
-            },
-        },
-    },
-    default: { features: [], verifications: [] },
-};
+// export const configSchema = {
+//     $id: '/identity/config',
+//     title: 'Identity module account schema',
+//     type: 'object',
+//     properties: {
+//         features: {
+//             fieldNumber: 1,
+//             type: 'array',
+//             maxItems: 256,
+//             items: {
+//                 type: 'object',
+//                 required: ['label', 'value'],
+//                 properties: {
+//                     label: { fieldNumber: 1, dataType: 'string' },
+//                     value: { fieldNumber: 2, dataType: 'string' },
+//                 },
+//             },
+//         },
+//         verifications: {
+//             fieldNumber: 2,
+//             type: 'array',
+//             items: {
+//                 type: 'object',
+//                 required: ['label', 'account', 'tx'],
+//                 properties: {
+//                     label: { fieldNumber: 1, dataType: 'string' },
+//                     account: { fieldNumber: 2, dataType: 'bytes' },
+//                     tx: { fieldNumber: 3, dataType: 'bytes' },
+//                 },
+//             },
+//         },
+//     },
+//     default: { features: [], verifications: [] },
+// };
 
 export const setFeatureSchema = {
     $id: 'identity/setFeature-params',
@@ -56,12 +56,8 @@ export const setFeatureSchema = {
     },
 };
 
-export interface CreateHelloParams {
-    message: string;
-}
-
 export const createHelloSchema = {
-    $id: 'hello/createHello-params',
+    $id: 'identity/createHello-params',
     title: 'CreateHelloCommand transaction parameter for the Hello module',
     type: 'object',
     required: ['message'],

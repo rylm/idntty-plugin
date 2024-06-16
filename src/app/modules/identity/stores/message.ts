@@ -5,7 +5,7 @@ export interface MessageStoreData {
 }
 
 export const messageStoreSchema = {
-    $id: '/hello/message',
+    $id: '/identity/message',
     type: 'object',
     required: ['message'],
     properties: {
