@@ -1,5 +1,6 @@
 import { BaseEndpoint, ModuleEndpointContext, cryptography } from 'lisk-sdk';
 import { AccountStore, AccountStoreData } from './stores/account';
+import { MessageStore, MessageStoreData } from './stores/message';
 
 export class IdentityEndpoint extends BaseEndpoint {
     public async getAccount(ctx: ModuleEndpointContext): Promise<AccountStoreData> {
@@ -35,5 +36,20 @@ export class IdentityEndpoint extends BaseEndpoint {
         console.log('Got accounts: ', accounts);
 
         return accounts;
+    }
+
+    public async getHello(ctx: ModuleEndpointContext): Promise<MessageStoreData> {
+        const messageSubStore = this.stores.get(MessageStore);
+
+        const { address } = ctx.params;
+        if (typeof address !== 'string') {
+            throw new Error('Parameter address must be a string.');
+        }
+        cryptography.address.validateLisk32Address(address);
+        const helloMessage = await messageSubStore.get(
+            ctx,
+            cryptography.address.getAddressFromLisk32Address(address),
+        );
+        return helloMessage;
     }
 }
