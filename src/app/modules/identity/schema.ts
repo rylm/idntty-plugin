@@ -83,6 +83,27 @@ export const createHelloSchema = {
     },
 };
 
+export const removeFeatureSchema = {
+    $id: 'identity/removeFeature-params',
+    title: 'Command schema to remove account features for identity module',
+    type: 'object',
+    required: ['features'],
+    properties: {
+        features: {
+            fieldNumber: 1,
+            type: 'array',
+            minItems: 1,
+            maxItems: 16,
+            items: {
+                type: 'object',
+                required: ['label'],
+                properties: {
+                    label: { fieldNumber: 1, dataType: 'string', maxLength: 16 },
+                },
+            },
+        },
+    },
+};
+
 export const invalidateFeatureSchema = {};
-export const removeFeatureSchema = {};
 export const validateFeatureSchema = {};

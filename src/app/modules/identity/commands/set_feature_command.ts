@@ -43,11 +43,20 @@ export class SetFeatureCommand extends BaseCommand {
         const { senderAddress } = _context.transaction;
         const accountSubstore = this.stores.get(AccountStore);
 
+        console.log('Features:', features);
+
         for (const feature of features) {
             let isUnique = true;
 
+            console.log('Currently on feature:', feature);
+
             const accountFeatures = (await accountSubstore.get(_context, senderAddress)).features;
+
+            console.log('Current account features:', accountFeatures);
+
             for (const accountFeature of accountFeatures) {
+                console.log('Currently on account feature:', accountFeature);
+
                 if (
                     feature.label === accountFeature.label &&
                     feature.value === accountFeature.value
@@ -58,6 +67,7 @@ export class SetFeatureCommand extends BaseCommand {
                 }
                 if (feature.label === accountFeature.label) {
                     isUnique = false;
+                    console.log('Feature already exists, updating it:', feature.label);
                     await accountSubstore.set(_context, senderAddress, {
                         features: accountFeatures.map(f =>
                             f.label === feature.label ? feature : f,
@@ -67,6 +77,7 @@ export class SetFeatureCommand extends BaseCommand {
             }
 
             if (isUnique) {
+                console.log('Feature is unique, adding it:', feature.label);
                 await accountSubstore.set(_context, senderAddress, {
                     features: [...accountFeatures, feature],
                 });
