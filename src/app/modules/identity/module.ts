@@ -3,7 +3,6 @@
 
 // import { validator } from '@liskhq/lisk-validator';
 import { BaseModule, /* ModuleInitArgs, */ ModuleMetadata /* utils */ } from 'lisk-sdk';
-import { CreateHelloCommand } from './commands/create_hello_command';
 import { InvalidateFeatureCommand } from './commands/invalidate_feature_command';
 import { RemoveFeatureCommand } from './commands/remove_feature_command';
 import { SetFeatureCommand } from './commands/set_feature_command';
@@ -12,7 +11,6 @@ import { IdentityEndpoint } from './endpoint';
 import { IdentityMethod } from './method';
 // import { configSchema } from './schema';
 import { AccountStore } from './stores/account';
-import { MessageStore } from './stores/message';
 // import { ModuleConfigJSON } from './types';
 
 export const defaultConfig = {
@@ -28,13 +26,11 @@ export class IdentityModule extends BaseModule {
         new InvalidateFeatureCommand(this.stores, this.events),
         new RemoveFeatureCommand(this.stores, this.events),
         new ValidateFeatureCommand(this.stores, this.events),
-        new CreateHelloCommand(this.stores, this.events),
     ];
 
     public constructor() {
         super();
         this.stores.register(AccountStore, new AccountStore(this.name, 0));
-        this.stores.register(MessageStore, new MessageStore(this.name, 1));
     }
 
     public metadata(): ModuleMetadata {

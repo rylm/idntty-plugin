@@ -5,6 +5,11 @@ export interface AccountStoreData {
         label: string;
         value: string;
     }[];
+    verifications: {
+        label: string;
+        account: string;
+        tx: string;
+    }[];
 }
 
 export const accountStoreSchema = {
@@ -21,6 +26,19 @@ export const accountStoreSchema = {
                 properties: {
                     label: { fieldNumber: 1, dataType: 'string' },
                     value: { fieldNumber: 2, dataType: 'string' },
+                },
+            },
+        },
+        verifications: {
+            fieldNumber: 2,
+            type: 'array',
+            items: {
+                type: 'object',
+                required: ['label', 'account', 'tx'],
+                properties: {
+                    label: { fieldNumber: 1, dataType: 'string' },
+                    account: { fieldNumber: 2, dataType: 'string' },
+                    tx: { fieldNumber: 3, dataType: 'string' },
                 },
             },
         },
