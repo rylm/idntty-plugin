@@ -56,33 +56,6 @@ export const setFeatureSchema = {
     },
 };
 
-export const createHelloSchema = {
-    $id: 'identity/createHello-params',
-    title: 'CreateHelloCommand transaction parameter for the Hello module',
-    type: 'object',
-    required: ['message', 'label', 'value'],
-    properties: {
-        message: {
-            dataType: 'string',
-            fieldNumber: 1,
-            minLength: 3,
-            maxLength: 256,
-        },
-        label: {
-            dataType: 'string',
-            fieldNumber: 2,
-            minLength: 3,
-            maxLength: 256,
-        },
-        value: {
-            dataType: 'string',
-            fieldNumber: 3,
-            minLength: 3,
-            maxLength: 256,
-        },
-    },
-};
-
 export const removeFeatureSchema = {
     $id: 'identity/removeFeature-params',
     title: 'Command schema to remove account features for identity module',
@@ -105,5 +78,49 @@ export const removeFeatureSchema = {
     },
 };
 
-export const invalidateFeatureSchema = {};
-export const validateFeatureSchema = {};
+export const validateFeatureSchema = {
+    $id: 'identity/validateFeature-params',
+    title: 'Command schema to validate account features for identity module',
+    type: 'object',
+    required: ['recepientAddress', 'features'],
+    properties: {
+        recipientAddress: { fieldNumber: 1, dataType: 'string', minLength: 42, maxLength: 42 },
+        features: {
+            fieldNumber: 2,
+            type: 'array',
+            minItems: 1,
+            maxItems: 16,
+            items: {
+                type: 'object',
+                required: ['label', 'value'],
+                properties: {
+                    label: { fieldNumber: 1, dataType: 'string', maxLength: 16 },
+                    value: { fieldNumber: 2, dataType: 'string', maxLength: 32 },
+                },
+            },
+        },
+    },
+};
+
+export const invalidateFeatureSchema = {
+    $id: 'identity/invalidateFeature-params',
+    title: 'Command schema to invalidate account features for identity module',
+    type: 'object',
+    required: ['recepientAddress', 'features'],
+    properties: {
+        recipientAddress: { fieldNumber: 1, dataType: 'string', minLength: 42, maxLength: 42 },
+        features: {
+            fieldNumber: 2,
+            type: 'array',
+            minItems: 1,
+            maxItems: 16,
+            items: {
+                type: 'object',
+                required: ['label'],
+                properties: {
+                    label: { fieldNumber: 1, dataType: 'string', maxLength: 16 },
+                },
+            },
+        },
+    },
+};

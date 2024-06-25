@@ -24,6 +24,13 @@ export class DigitalidentityPlugin extends BasePlugin {
     public async load(): Promise<void> {
         this.endpoint.init();
 
+        server.get('/node/info', controllers.node.info(this.apiClient));
+        server.get('/node/metrics', controllers.node.metrics(this.apiClient));
+        server.get('/node/schema', controllers.node.schema(this.apiClient));
+        server.get('/node/metadata', controllers.node.metadata(this.apiClient));
+
+        server.get('/account', controllers.account.get(this.apiClient));
+
         server.get('/register', controllers.auth.register());
         server.post('/register/verify', controllers.auth.registerVerify());
 

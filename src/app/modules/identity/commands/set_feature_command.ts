@@ -22,7 +22,6 @@ interface Params {
 export class SetFeatureCommand extends BaseCommand {
     public schema = setFeatureSchema;
 
-    // eslint-disable-next-line @typescript-eslint/require-await
     public async verify(_context: CommandVerifyContext<Params>): Promise<VerificationResult> {
         const { params } = _context;
 
@@ -50,11 +49,11 @@ export class SetFeatureCommand extends BaseCommand {
 
             console.log('Currently on feature:', feature);
 
-            const accountFeatures = (await accountSubstore.get(_context, senderAddress)).features;
+            const account = await accountSubstore.get(_context, senderAddress);
 
-            console.log('Current account features:', accountFeatures);
+            console.log('Current account features:', account.features);
 
-            for (const accountFeature of accountFeatures) {
+            for (const accountFeature of account.features) {
                 console.log('Currently on account feature:', accountFeature);
 
                 if (
@@ -69,7 +68,8 @@ export class SetFeatureCommand extends BaseCommand {
                     isUnique = false;
                     console.log('Feature already exists, updating it:', feature.label);
                     await accountSubstore.set(_context, senderAddress, {
-                        features: accountFeatures.map(f =>
+                        ...account,
+                        features: account.features.map(f =>
                             f.label === feature.label ? feature : f,
                         ),
                     });
@@ -79,10 +79,15 @@ export class SetFeatureCommand extends BaseCommand {
             if (isUnique) {
                 console.log('Feature is unique, adding it:', feature.label);
                 await accountSubstore.set(_context, senderAddress, {
-                    features: [...accountFeatures, feature],
+                    ...account,
+                    features: [...account.features, feature],
                 });
             } else {
-                // Delete validated features for updated
+                console.log('Removing verifications for feature:', feature);
+                await accountSubstore.set(_context, senderAddress, {
+                    ...account,
+                    verifications: account.verifications.filter(v => v.label !== feature.label),
+                });
             }
         }
     }

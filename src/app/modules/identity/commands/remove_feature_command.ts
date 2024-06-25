@@ -45,8 +45,8 @@ export class RemoveFeatureCommand extends BaseCommand {
         for (const feature of features) {
             let doesFeatureExist = false;
 
-            const accountFeatures = (await accountSubstore.get(_context, senderAddress)).features;
-            for (const accountFeature of accountFeatures) {
+            const account = await accountSubstore.get(_context, senderAddress);
+            for (const accountFeature of account.features) {
                 if (feature.label === accountFeature.label) {
                     doesFeatureExist = true;
                     break;
@@ -59,12 +59,14 @@ export class RemoveFeatureCommand extends BaseCommand {
                 );
             }
 
-            const newFeatures = accountFeatures.filter(
-                accountFeature => accountFeature.label !== feature.label,
-            );
-            await accountSubstore.set(_context, senderAddress, { features: newFeatures });
-
-            // deal with validations
+            await accountSubstore.set(_context, senderAddress, {
+                features: account.features.filter(
+                    accountFeature => accountFeature.label !== feature.label,
+                ),
+                verifications: account.verifications.filter(
+                    verification => verification.label !== feature.label,
+                ),
+            });
         }
     }
 }
