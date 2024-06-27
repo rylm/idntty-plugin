@@ -10,7 +10,9 @@ import { ValidateFeatureCommand } from './commands/validate_feature_command';
 import { IdentityEndpoint } from './endpoint';
 import { IdentityMethod } from './method';
 // import { configSchema } from './schema';
+import { SetAccountTypeCommand } from "./commands/set_account_type_command";
 import { AccountStore } from './stores/account';
+
 // import { ModuleConfigJSON } from './types';
 
 export const defaultConfig = {
@@ -22,11 +24,11 @@ export class IdentityModule extends BaseModule {
     public endpoint = new IdentityEndpoint(this.stores, this.offchainStores);
     public method = new IdentityMethod(this.stores, this.events);
     public commands = [
-        new SetFeatureCommand(this.stores, this.events),
-        new InvalidateFeatureCommand(this.stores, this.events),
-        new RemoveFeatureCommand(this.stores, this.events),
-        new ValidateFeatureCommand(this.stores, this.events),
-    ];
+                new SetFeatureCommand(this.stores, this.events),
+                new InvalidateFeatureCommand(this.stores, this.events),
+                new RemoveFeatureCommand(this.stores, this.events),
+                new ValidateFeatureCommand(this.stores, this.events),
+            , new SetAccountTypeCommand(this.stores, this.events)];
 
     public constructor() {
         super();
