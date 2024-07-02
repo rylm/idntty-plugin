@@ -124,3 +124,13 @@ export const invalidateFeatureSchema = {
         },
     },
 };
+
+export const setAccountTypeSchema = {
+    $id: 'identity/setAccountType-params',
+    title: 'Command schema to set account type for identity module',
+    type: 'object',
+    required: ['type'],
+    properties: {
+        isAuthority: { fieldNumber: 1, dataType: 'boolean' },
+    },
+};

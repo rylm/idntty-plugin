@@ -60,6 +60,7 @@ export class RemoveFeatureCommand extends BaseCommand {
             }
 
             await accountSubstore.set(_context, senderAddress, {
+                ...account,
                 features: account.features.filter(
                     accountFeature => accountFeature.label !== feature.label,
                 ),
