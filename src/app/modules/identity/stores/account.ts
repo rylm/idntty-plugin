@@ -10,12 +10,13 @@ export interface AccountStoreData {
         account: string;
         tx: string;
     }[];
+    isAuthority: boolean;
 }
 
 export const accountStoreSchema = {
     $id: '/identity/account',
     type: 'object',
-    required: ['features'],
+    required: ['features', 'isAuthority'],
     properties: {
         features: {
             fieldNumber: 1,
@@ -42,6 +43,7 @@ export const accountStoreSchema = {
                 },
             },
         },
+        isAuthority: { fieldNumber: 3, dataType: 'boolean' },
     },
 };
 
