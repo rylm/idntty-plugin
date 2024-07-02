@@ -3,25 +3,19 @@
 
 import {
     BaseModule,
-	ModuleMetadata,
-	// ModuleInitArgs,
-	// InsertAssetContext,
-	// BlockVerifyContext,
-	// TransactionVerifyContext,
-	// VerificationResult,
-	// TransactionExecuteContext,
-	// GenesisBlockExecuteContext,
-	// BlockExecuteContext,
-	// BlockAfterExecuteContext,
-	// VerifyStatus,
+    ModuleMetadata
 } from 'lisk-sdk';
+import { ArchiveBadgeCommand } from "./commands/archive_badge_command";
+import { AssignBadgeCommand } from "./commands/assign_badge_command";
+import { CreateBadgeCommand } from "./commands/create_badge_command";
+import { IssueBadgeCommand } from "./commands/issue_badge_command";
 import { BadgeEndpoint } from './endpoint';
 import { BadgeMethod } from './method';
 
 export class BadgeModule extends BaseModule {
     public endpoint = new BadgeEndpoint(this.stores, this.offchainStores);
     public method = new BadgeMethod(this.stores, this.events);
-    public commands = [];
+    public commands = [new CreateBadgeCommand(this.stores, this.events), new ArchiveBadgeCommand(this.stores, this.events), new IssueBadgeCommand(this.stores, this.events), new AssignBadgeCommand(this.stores, this.events)];
 
 	// public constructor() {
 	// 	super();
