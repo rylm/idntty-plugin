@@ -1,38 +1,3 @@
-// export const configSchema = {
-//     $id: '/identity/config',
-//     title: 'Identity module account schema',
-//     type: 'object',
-//     properties: {
-//         features: {
-//             fieldNumber: 1,
-//             type: 'array',
-//             maxItems: 256,
-//             items: {
-//                 type: 'object',
-//                 required: ['label', 'value'],
-//                 properties: {
-//                     label: { fieldNumber: 1, dataType: 'string' },
-//                     value: { fieldNumber: 2, dataType: 'string' },
-//                 },
-//             },
-//         },
-//         verifications: {
-//             fieldNumber: 2,
-//             type: 'array',
-//             items: {
-//                 type: 'object',
-//                 required: ['label', 'account', 'tx'],
-//                 properties: {
-//                     label: { fieldNumber: 1, dataType: 'string' },
-//                     account: { fieldNumber: 2, dataType: 'bytes' },
-//                     tx: { fieldNumber: 3, dataType: 'bytes' },
-//                 },
-//             },
-//         },
-//     },
-//     default: { features: [], verifications: [] },
-// };
-
 export const setFeatureSchema = {
     $id: 'identity/setFeature-params',
     title: 'Command schema to set or update account features for identity module',
@@ -82,7 +47,7 @@ export const validateFeatureSchema = {
     $id: 'identity/validateFeature-params',
     title: 'Command schema to validate account features for identity module',
     type: 'object',
-    required: ['recepientAddress', 'features'],
+    required: ['recipientAddress', 'features'],
     properties: {
         recipientAddress: { fieldNumber: 1, dataType: 'string', minLength: 42, maxLength: 42 },
         features: {
@@ -106,7 +71,7 @@ export const invalidateFeatureSchema = {
     $id: 'identity/invalidateFeature-params',
     title: 'Command schema to invalidate account features for identity module',
     type: 'object',
-    required: ['recepientAddress', 'features'],
+    required: ['recipientAddress', 'features'],
     properties: {
         recipientAddress: { fieldNumber: 1, dataType: 'string', minLength: 42, maxLength: 42 },
         features: {
