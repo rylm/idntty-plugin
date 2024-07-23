@@ -8,6 +8,8 @@ import { CreateBadgeCommand } from './commands/create_badge_command';
 import { IssueBadgeCommand } from './commands/issue_badge_command';
 import { BadgeEndpoint } from './endpoint';
 import { BadgeMethod } from './method';
+import { NewBadgeIssuedEvent } from './events/newBadgeIssued';
+import { AccountStore } from './stores/account';
 
 import { IdentityMethod } from '../identity/method';
 
@@ -30,10 +32,12 @@ export class BadgeModule extends BaseModule {
         this._identityMethod = identityMethod;
     }
 
-    // public constructor() {
-    // 	super();
-    // 	// registeration of stores and events
-    // }
+    public constructor() {
+        super();
+        this.stores.register(AccountStore, new AccountStore(this.name, 0));
+
+        this.events.register(NewBadgeIssuedEvent, new NewBadgeIssuedEvent(this.name));
+    }
 
     public metadata(): ModuleMetadata {
         return {

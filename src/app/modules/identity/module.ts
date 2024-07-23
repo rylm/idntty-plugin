@@ -9,6 +9,8 @@ import { SetFeatureCommand } from './commands/set_feature_command';
 import { ValidateFeatureCommand } from './commands/validate_feature_command';
 import { IdentityEndpoint } from './endpoint';
 import { IdentityMethod } from './method';
+import { NewValidationEvent } from './events/newValidation';
+import { NewInvalidationEvent } from './events/newInvalidation';
 // import { configSchema } from './schema';
 import { SetAccountTypeCommand } from './commands/set_account_type_command';
 import { AccountStore } from './stores/account';
@@ -34,6 +36,9 @@ export class IdentityModule extends BaseModule {
     public constructor() {
         super();
         this.stores.register(AccountStore, new AccountStore(this.name, 0));
+
+        this.events.register(NewValidationEvent, new NewValidationEvent(this.name));
+        this.events.register(NewInvalidationEvent, new NewInvalidationEvent(this.name));
     }
 
     public metadata(): ModuleMetadata {
