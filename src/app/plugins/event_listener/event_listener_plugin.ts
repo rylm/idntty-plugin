@@ -1,16 +1,21 @@
 import { BasePlugin } from 'lisk-sdk';
 
- /* eslint-disable class-methods-use-this */
- /* eslint-disable  @typescript-eslint/no-empty-function */
- export class EventListenerPlugin extends BasePlugin {
+export class EventListenerPlugin extends BasePlugin {
+    public get nodeModulePath(): string {
+        return __filename;
+    }
 
-	public name: 'eventListener';
+    public async load(): Promise<void> {
+        this.apiClient.subscribe('network_newBlock', data => {
+            const blockData = data as { blockHeader: { id: string } };
+            this.apiClient
+                .invoke('chain_getBlockByID', { id: blockData.blockHeader.id })
+                .then(block => {
+                    console.log('NEW BLOCK:', block);
+                })
+                .catch(console.error);
+        });
+    }
 
-	public get nodeModulePath(): string {
-		return  __filename;
-	}
-
-	public async load(): Promise<void> {}
-
-	public async unload(): Promise<void> {}
+    public async unload(): Promise<void> {}
 }
