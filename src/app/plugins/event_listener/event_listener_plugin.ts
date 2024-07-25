@@ -1,5 +1,8 @@
 import { BasePlugin } from 'lisk-sdk';
 import type { BlockJSON } from '@liskhq/lisk-api-client/dist-node/types';
+import { inspect } from 'util';
+
+import { saveNotification } from './database';
 
 export class EventListenerPlugin extends BasePlugin {
     public get nodeModulePath(): string {
@@ -15,7 +18,10 @@ export class EventListenerPlugin extends BasePlugin {
                     const block = this.apiClient.block.fromJSON(
                         encodedBlock as unknown as BlockJSON,
                     );
-                    console.log('New block:', block);
+                    console.log('New block:', inspect(block, { depth: null, colors: true }));
+                    block.transactions.forEach(tx => {
+                        saveNotification(tx.senderPublicKey.toString('hex'), tx.command, tx.params);
+                    });
                 })
                 .catch(console.error);
         });

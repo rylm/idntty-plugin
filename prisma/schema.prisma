@@ -8,12 +8,13 @@ datasource db {
 }
 
 model User {
-  public_key String                @id
-  username   String
-  layout     Json
-  devices    AuthenticatorDevice[]
-  badges     Badge[]
-  userData   UserData[]            @relation("UserToUserData")
+  public_key    String                @id
+  username      String
+  layout        Json
+  devices       AuthenticatorDevice[]
+  badges        Badge[]
+  userData      UserData[]            @relation("UserToUserData")
+  notifications Notification[]
 
   @@map("users")
 }
@@ -65,6 +66,16 @@ model Badge {
   user       User   @relation(fields: [public_key], references: [public_key])
 
   @@map("badges")
+}
+
+model Notification {
+  id         Int    @id @default(autoincrement())
+  user       User?  @relation(fields: [public_key], references: [public_key])
+  public_key String
+  type       String
+  data       Json
+
+  @@map("notifications")
 }
 
 enum AuthenticatorTransportFuture {
