@@ -12,7 +12,7 @@ import type {
     PublicKeyCredentialType,
     AuthenticationResponseJSON,
     RegistrationResponseJSON,
-} from '@simplewebauthn/typescript-types';
+} from '@simplewebauthn/types';
 
 // eslint-disable-next-line import/no-unresolved
 import { isoUint8Array, isoBase64URL } from '@simplewebauthn/server/helpers';
