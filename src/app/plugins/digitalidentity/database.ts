@@ -240,6 +240,17 @@ export const saveUserDataEntry = async ({
                     }
                 }),
             );
+            if (domain && domain !== publicKey) {
+                await prisma.notification.create({
+                    data: {
+                        public_key: publicKey,
+                        type: 'share',
+                        data: JSON.stringify({
+                            for: domain,
+                        }),
+                    },
+                });
+            }
         }),
     );
 };
