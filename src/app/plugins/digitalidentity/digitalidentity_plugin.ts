@@ -76,6 +76,8 @@ export class DigitalidentityPlugin extends BasePlugin {
         );
         server.get('/get-uploaded-images', controllers.s3.getUploadedImages());
 
+        server.get('/get-notifications', controllers.events.getNotifications());
+
         server.listen({ port: 8000 });
         console.log('DI:Loaded');
     }

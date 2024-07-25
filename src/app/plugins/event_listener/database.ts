@@ -8,11 +8,19 @@ export interface Notification {
     data: Record<string, unknown>;
 }
 
-export const saveNotifications = async (notifications: Notification[]) =>
+export const saveUserNotifications = async (notifications: Notification[]) =>
     prisma.notification.createMany({
         data: notifications.map(({ publicKey, notificationType, data }) => ({
             public_key: publicKey,
             type: notificationType,
             data: JSON.stringify(data),
         })),
+    });
+
+export const getUserNotifications = async (publicKey: string, notificationType?: string) =>
+    prisma.notification.findMany({
+        where: {
+            public_key: publicKey,
+            type: notificationType,
+        },
     });
