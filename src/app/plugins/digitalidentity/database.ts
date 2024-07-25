@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import type { AuthenticatorTransportFuture } from '@simplewebauthn/typescript-types';
+import type { AuthenticatorTransportFuture } from '@simplewebauthn/types';
 import type { DataEntry } from './controllers/data';
 
 const prisma = new PrismaClient();
