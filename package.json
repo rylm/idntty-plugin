@@ -137,6 +137,7 @@
         "uuid": "^9.0.1"
     },
     "devDependencies": {
+        "@liskhq/lisk-api-client": "^6.0.2",
         "@oclif/test": "2.2.12",
         "@simplewebauthn/typescript-types": "^8.3.4",
         "@types/fs-extra": "9.0.13",

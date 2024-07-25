@@ -1,4 +1,5 @@
 import { BasePlugin } from 'lisk-sdk';
+import type { BlockJSON } from '@liskhq/lisk-api-client/dist-node/types';
 
 export class EventListenerPlugin extends BasePlugin {
     public get nodeModulePath(): string {
@@ -10,8 +11,11 @@ export class EventListenerPlugin extends BasePlugin {
             const blockData = data as { blockHeader: { id: string } };
             this.apiClient
                 .invoke('chain_getBlockByID', { id: blockData.blockHeader.id })
-                .then(block => {
-                    console.log('NEW BLOCK:', block);
+                .then(encodedBlock => {
+                    const block = this.apiClient.block.fromJSON(
+                        encodedBlock as unknown as BlockJSON,
+                    );
+                    console.log('New block:', block);
                 })
                 .catch(console.error);
         });
