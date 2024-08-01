@@ -249,6 +249,7 @@ export const saveUserDataEntry = async ({
                         data: JSON.stringify({
                             features: data.map(item => item.uuid),
                         }),
+                        timestamp: new Date(),
                     },
                 });
             }

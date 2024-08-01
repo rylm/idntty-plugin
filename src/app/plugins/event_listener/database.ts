@@ -11,12 +11,16 @@ export interface Notification {
 
 export const saveUserNotifications = async (notifications: Notification[]) =>
     prisma.notification.createMany({
-        data: notifications.map(({ publicKey, forPublicKey, notificationType, data }) => ({
-            public_key: publicKey,
-            for_public_key: forPublicKey,
-            type: notificationType,
-            data: JSON.stringify(data),
-        })),
+        data: notifications.map(({ publicKey, forPublicKey, notificationType, data }) => {
+            const timestamp = new Date();
+            return {
+                public_key: publicKey,
+                for_public_key: forPublicKey,
+                type: notificationType,
+                data: JSON.stringify(data),
+                timestamp,
+            };
+        }),
     });
 
 export const getUserNotifications = async (
