@@ -20,6 +20,9 @@ export class EventListenerPlugin extends BasePlugin {
             await saveUserNotifications(
                 block.transactions.map(tx => ({
                     publicKey: tx.senderPublicKey.toString('hex'),
+                    forPublicKey: ['validateFeature', 'invalidateFeature'].includes(tx.command)
+                        ? (tx.params.recipientAddress as string)
+                        : undefined,
                     notificationType: tx.command,
                     data: tx.params,
                 })),

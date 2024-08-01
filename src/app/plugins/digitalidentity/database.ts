@@ -244,9 +244,10 @@ export const saveUserDataEntry = async ({
                 await prisma.notification.create({
                     data: {
                         public_key: publicKey,
+                        for_public_key: domain,
                         type: 'share',
                         data: JSON.stringify({
-                            for: domain,
+                            features: data.map(item => item.uuid),
                         }),
                     },
                 });

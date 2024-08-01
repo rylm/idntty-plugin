@@ -68,10 +68,11 @@ model Badge {
 }
 
 model Notification {
-  id         Int    @id @default(autoincrement())
-  public_key String
-  type       String
-  data       Json
+  id             Int     @id @default(autoincrement())
+  public_key     String
+  for_public_key String?
+  type           String
+  data           Json
 
   @@map("notifications")
 }
