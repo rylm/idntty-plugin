@@ -34,4 +34,7 @@ export const getUserNotifications = async (
             for_public_key: forPublicKey,
             type: notificationType,
         },
+        orderBy: {
+            timestamp: 'asc',
+        },
     });
