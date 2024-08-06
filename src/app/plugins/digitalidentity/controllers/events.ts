@@ -37,8 +37,8 @@ export const getNotifications =
         return res.send(
             notifications.filter(notification =>
                 isWithinInterval(notification.timestamp, {
-                    start: startDate,
-                    end: endDate,
+                    start: new Date(startDate * 1000),
+                    end: new Date(endDate * 1000),
                 }),
             ),
         );
