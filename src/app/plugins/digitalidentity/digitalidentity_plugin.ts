@@ -67,6 +67,8 @@ export class DigitalidentityPlugin extends BasePlugin {
             controllers.data.saveData(),
         );
 
+        server.get('/get-user-idntty', controllers.data.getUserIdentity());
+
         server.post(
             '/get-upload-url',
             {
