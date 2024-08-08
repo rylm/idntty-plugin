@@ -7,6 +7,7 @@ import {
     getPublicUserDataEntry,
     getSharedUserDataEntry,
     saveUserDataEntry,
+    getIsAuthority,
 } from '../database';
 
 export interface DataEntry {
@@ -109,4 +110,19 @@ export const saveData =
         await saveUserDataEntry({ publicKey, domains, data });
 
         return res.send({ success: true });
+    };
+
+export const getUserIdentity =
+    () =>
+    async (
+        req: FastifyRequest<{
+            Querystring: { publicKey: string };
+        }>,
+        res: FastifyReply,
+    ) => {
+        const { publicKey } = req.query;
+
+        const isAuthority = await getIsAuthority(publicKey);
+
+        return res.send({ isAuthority });
     };

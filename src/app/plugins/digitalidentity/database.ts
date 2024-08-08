@@ -38,6 +38,7 @@ export const getAuthenticatorDeviceByCredentialID = async (credentialID: Uint8Ar
 export const createUser = async ({
     publicKey,
     username,
+    isAuthority,
     credentialID,
     credentialPublicKey,
     counter,
@@ -46,6 +47,7 @@ export const createUser = async ({
 }: {
     publicKey: string;
     username: string;
+    isAuthority: boolean;
     credentialID: Uint8Array;
     credentialPublicKey: Uint8Array;
     counter: number;
@@ -56,6 +58,7 @@ export const createUser = async ({
         data: {
             public_key: publicKey,
             username,
+            isAuthority,
             layout: JSON.stringify(layout),
             devices: {
                 create: [
@@ -312,6 +315,20 @@ export const getSharedUserDataEntry = async (publicKey: string, forPublicKey: st
                 nonce: entry.nonce,
             } as DataEntry),
     );
+};
+
+export const getIsAuthority = async (publicKey: string) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            public_key: publicKey,
+        },
+    });
+
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    return user.isAuthority;
 };
 
 export const saveBadgeImage = async ({
