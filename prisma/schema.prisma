@@ -8,12 +8,13 @@ datasource db {
 }
 
 model User {
-  public_key String                @id
-  username   String
-  layout     Json
-  devices    AuthenticatorDevice[]
-  badges     Badge[]
-  userData   UserData[]            @relation("UserToUserData")
+  public_key  String                @id
+  username    String
+  layout      Json
+  isAuthority Boolean
+  devices     AuthenticatorDevice[]
+  badges      Badge[]
+  userData    UserData[]            @relation("UserToUserData")
 
   @@map("users")
 }

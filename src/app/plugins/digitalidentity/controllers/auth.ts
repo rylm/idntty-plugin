@@ -85,7 +85,11 @@ export const registerVerify =
     () =>
     async (
         req: FastifyRequest<{
-            Body: { publicKey: string; registrationResponse: RegistrationResponseJSON };
+            Body: {
+                publicKey: string;
+                isAuthority: boolean;
+                registrationResponse: RegistrationResponseJSON;
+            };
         }>,
         res: FastifyReply,
     ) => {
@@ -121,6 +125,7 @@ export const registerVerify =
                     user = await createUser({
                         publicKey: req.body.publicKey,
                         username: req.body.publicKey,
+                        isAuthority: req.body.isAuthority,
                         credentialID,
                         credentialPublicKey,
                         counter,
