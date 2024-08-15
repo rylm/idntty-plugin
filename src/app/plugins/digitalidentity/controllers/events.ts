@@ -1,7 +1,7 @@
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import { isWithinInterval } from 'date-fns';
 
-import { getUserNotifications } from '../../event_listener/database';
+import { getUserNotifications, getUserTransactions } from '../../event_listener/database';
 
 export const getNotifications =
     () =>
@@ -37,6 +37,64 @@ export const getNotifications =
         return res.send(
             notifications.filter(notification =>
                 isWithinInterval(notification.timestamp, {
+                    start: new Date(startDate * 1000),
+                    end: new Date(endDate * 1000),
+                }),
+            ),
+        );
+    };
+
+export const getTransactions =
+    () =>
+    async (
+        req: FastifyRequest<{
+            Querystring: {
+                publicKey?: string;
+                forPublicKey?: string;
+                transactionType?: string;
+                blockHeight?: number;
+                txID?: string;
+                startDate?: number;
+                endDate?: number;
+                amount?: number;
+            };
+        }>,
+        res: FastifyReply,
+    ) => {
+        const {
+            publicKey,
+            forPublicKey,
+            transactionType,
+            blockHeight,
+            txID,
+            startDate,
+            endDate,
+            amount,
+        } = req.query;
+
+        if (amount && startDate && endDate) {
+            return res.status(400).send('Amount, startDate and endDate cannot be used together');
+        }
+
+        const transactions = await getUserTransactions(
+            publicKey,
+            forPublicKey,
+            transactionType,
+            blockHeight,
+            txID,
+        );
+
+        if (amount) {
+            return res.send(transactions.slice(-amount));
+        }
+
+        if (!startDate || !endDate) {
+            return res.send(transactions);
+        }
+
+        return res.send(
+            transactions.filter(transaction =>
+                isWithinInterval(transaction.timestamp, {
                     start: new Date(startDate * 1000),
                     end: new Date(endDate * 1000),
                 }),
