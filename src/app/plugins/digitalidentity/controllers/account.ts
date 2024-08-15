@@ -26,7 +26,10 @@ export const getBalance =
         const { address } = req.query;
 
         try {
-            const balances = await apiClient.invoke('token_getBalances', { address });
+            const balances = await apiClient.invoke('token_getBalance', {
+                address,
+                tokenID: 'abcdef0100000000',
+            });
             res.send(balances);
         } catch (error) {
             res.status(500).send({ error });
