@@ -16,3 +16,19 @@ export const get =
             res.status(500).send({ error });
         }
     };
+
+export const getBalance =
+    (apiClient: BasePlugin['apiClient']) =>
+    async (
+        req: FastifyRequest<{ Querystring: { address: string } }>,
+        res: FastifyReply,
+    ): Promise<void> => {
+        const { address } = req.query;
+
+        try {
+            const balances = await apiClient.invoke('token_getBalances', { address });
+            res.send(balances);
+        } catch (error) {
+            res.status(500).send({ error });
+        }
+    };
