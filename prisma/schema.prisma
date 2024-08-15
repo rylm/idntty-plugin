@@ -79,6 +79,20 @@ model Notification {
   @@map("notifications")
 }
 
+model Transaction {
+  id             Int      @id @default(autoincrement())
+  tx_id          String
+  block_height   Int
+  price          BigInt
+  public_key     String
+  for_public_key String?
+  type           String
+  data           Json
+  timestamp      DateTime
+
+  @@map("transactions")
+}
+
 enum AuthenticatorTransportFuture {
   ble
   cable

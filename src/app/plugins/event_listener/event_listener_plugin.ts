@@ -2,7 +2,7 @@ import { BasePlugin } from 'lisk-sdk';
 import type { BlockJSON } from '@liskhq/lisk-api-client/dist-node/types';
 import { inspect } from 'util';
 
-import { saveUserNotifications } from './database';
+import { saveUserTransactions } from './database';
 
 export class EventListenerPlugin extends BasePlugin {
     public get nodeModulePath(): string {
@@ -17,13 +17,16 @@ export class EventListenerPlugin extends BasePlugin {
             });
             const block = this.apiClient.block.fromJSON(encodedBlock as unknown as BlockJSON);
             console.log('New block:', inspect(block, { depth: null, colors: true }));
-            await saveUserNotifications(
+            await saveUserTransactions(
                 block.transactions.map(tx => ({
                     publicKey: tx.senderPublicKey.toString('hex'),
                     forPublicKey: ['validateFeature', 'invalidateFeature'].includes(tx.command)
                         ? (tx.params.recipientAddress as string)
                         : undefined,
-                    notificationType: tx.command,
+                    transactionType: tx.command,
+                    blockHeight: block.header.height,
+                    price: tx.fee,
+                    txID: tx.id.toString('hex'),
                     data: tx.params,
                 })),
             );
