@@ -84,25 +84,25 @@ export const getTransactions =
             txID,
         );
 
+        const serializedTransactions = transactions.map(transaction => ({
+            ...transaction,
+            price: transaction.price.toString(),
+        }));
+
         if (amount) {
-            return res.send(transactions.slice(-amount));
+            return res.send(serializedTransactions.slice(-amount));
         }
 
         if (!startDate || !endDate) {
-            return res.send(transactions);
+            return res.send(serializedTransactions);
         }
 
         return res.send(
-            transactions
-                .map(transaction => ({
-                    ...transaction,
-                    price: transaction.price.toString(),
-                }))
-                .filter(transaction =>
-                    isWithinInterval(transaction.timestamp, {
-                        start: new Date(startDate * 1000),
-                        end: new Date(endDate * 1000),
-                    }),
-                ),
+            serializedTransactions.filter(transaction =>
+                isWithinInterval(transaction.timestamp, {
+                    start: new Date(startDate * 1000),
+                    end: new Date(endDate * 1000),
+                }),
+            ),
         );
     };
