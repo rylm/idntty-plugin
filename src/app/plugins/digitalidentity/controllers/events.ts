@@ -93,11 +93,16 @@ export const getTransactions =
         }
 
         return res.send(
-            transactions.filter(transaction =>
-                isWithinInterval(transaction.timestamp, {
-                    start: new Date(startDate * 1000),
-                    end: new Date(endDate * 1000),
-                }),
-            ),
+            transactions
+                .map(transaction => ({
+                    ...transaction,
+                    price: transaction.price.toString(),
+                }))
+                .filter(transaction =>
+                    isWithinInterval(transaction.timestamp, {
+                        start: new Date(startDate * 1000),
+                        end: new Date(endDate * 1000),
+                    }),
+                ),
         );
     };
