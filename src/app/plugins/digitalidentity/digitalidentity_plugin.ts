@@ -30,6 +30,7 @@ export class DigitalidentityPlugin extends BasePlugin {
         server.get('/node/metadata', controllers.node.metadata(this.apiClient));
 
         server.get('/account', controllers.account.get(this.apiClient));
+        server.get('/account/balance', controllers.account.getBalance(this.apiClient));
 
         server.get('/register', controllers.auth.register());
         server.post('/register/verify', controllers.auth.registerVerify());
