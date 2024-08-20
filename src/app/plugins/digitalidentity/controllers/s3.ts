@@ -1,7 +1,7 @@
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 
 import { saveBadgeImage, getBadgeImagesByPublicKey } from '../database';
 import { uuidv4 } from '../../../../lib/utils';
@@ -16,12 +16,19 @@ export const getUploadUrl =
     ) => {
         const { publicKey, fileName, contentType } = req.body;
 
-        const newFileName = `${uuidv4()}-${fileName}`;
+        let newFileName = '';
+        try {
+            await s3Client.send(new HeadObjectCommand({ Bucket: 'io.idntty.cdn', Key: fileName }));
+            newFileName = fileName;
+        } catch (error) {
+            newFileName = uuidv4();
+        }
 
         const command = new PutObjectCommand({
             Bucket: 'io.idntty.cdn',
             Key: newFileName,
             ContentType: contentType,
+            // Expires: new Date(),
         });
 
         try {
@@ -53,22 +60,7 @@ export const getUploadedImages =
         try {
             const badges = await getBadgeImagesByPublicKey(userID);
 
-            const urls = await Promise.all(
-                badges.map(async badge => {
-                    const command = new GetObjectCommand({
-                        Bucket: 'io.idntty.cdn',
-                        Key: badge.fileKey,
-                    });
-
-                    const url = await getSignedUrl(s3Client, command, {
-                        expiresIn: 3600,
-                    });
-
-                    return url;
-                }),
-            );
-
-            return res.send({ urls });
+            return res.send(badges.map(badge => badge.fileKey));
         } catch (error) {
             console.error(error);
             return res.status(500).send({ error: `Error getting images: ${error}` });
