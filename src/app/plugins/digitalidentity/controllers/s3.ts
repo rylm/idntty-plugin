@@ -47,18 +47,18 @@ export const getUploadedImages =
     () =>
     async (
         req: FastifyRequest<{
-            Querystring: { userID: string };
+            Querystring: { publicKey: string };
         }>,
         res: FastifyReply,
     ) => {
-        const { userID } = req.query;
+        const { publicKey } = req.query;
 
-        if (!userID) {
+        if (!publicKey) {
             return res.status(400).send({ error: 'User ID not found' });
         }
 
         try {
-            const badges = await getBadgeImagesByPublicKey(userID);
+            const badges = await getBadgeImagesByPublicKey(publicKey);
 
             return res.send(badges.map(badge => badge.fileKey));
         } catch (error) {
