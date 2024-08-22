@@ -94,7 +94,7 @@ export const setAccountTypeSchema = {
     $id: 'identity/setAccountType-params',
     title: 'Command schema to set account type for identity module',
     type: 'object',
-    required: ['type'],
+    required: ['isAuthority'],
     properties: {
         isAuthority: { fieldNumber: 1, dataType: 'boolean' },
     },
