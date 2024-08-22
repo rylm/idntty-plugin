@@ -20,7 +20,9 @@ export class EventListenerPlugin extends BasePlugin {
             await saveUserTransactions(
                 block.transactions.map(tx => ({
                     publicKey: tx.senderPublicKey.toString('hex'),
-                    forPublicKey: ['validateFeature', 'invalidateFeature'].includes(tx.command)
+                    forPublicKey: ['validateFeature', 'invalidateFeature', 'issueBadge'].includes(
+                        tx.command,
+                    )
                         ? (tx.params.recipientAddress as string)
                         : undefined,
                     transactionType: tx.command,
