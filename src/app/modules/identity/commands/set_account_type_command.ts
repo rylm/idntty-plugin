@@ -5,6 +5,7 @@ import {
     VerificationResult,
     VerifyStatus,
 } from 'lisk-sdk';
+import { inspect } from 'util';
 
 import { AccountStore } from '../stores/account';
 import { setAccountTypeSchema } from '../schema';
@@ -21,6 +22,7 @@ export class SetAccountTypeCommand extends BaseCommand {
     }
 
     public async execute(_context: CommandExecuteContext<Params>): Promise<void> {
+        console.log('SetAccountTypeCommand: ', inspect(_context, { depth: null, colors: true }));
         const { isAuthority } = _context.params;
         const { senderAddress } = _context.transaction;
         const accountSubstore = this.stores.get(AccountStore);
@@ -31,5 +33,12 @@ export class SetAccountTypeCommand extends BaseCommand {
             ...account,
             isAuthority,
         });
+
+        console.log(
+            inspect(await accountSubstore.get(_context, senderAddress), {
+                depth: null,
+                colors: true,
+            }),
+        );
     }
 }
