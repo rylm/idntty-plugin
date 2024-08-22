@@ -22,7 +22,6 @@ export class SetAccountTypeCommand extends BaseCommand {
     }
 
     public async execute(_context: CommandExecuteContext<Params>): Promise<void> {
-        console.log('SetAccountTypeCommand: ', inspect(_context, { depth: null, colors: true }));
         const { isAuthority } = _context.params;
         const { senderAddress } = _context.transaction;
         const accountSubstore = this.stores.get(AccountStore);
