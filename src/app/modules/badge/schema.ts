@@ -30,7 +30,7 @@ export const issueBadgeSchema = {
     type: 'object',
     required: ['ids', 'recipientAddress'],
     properties: {
-        recipientAddress: { fieldNumber: 1, dataType: 'string', minLength: 42, maxLength: 42 },
+        recipientAddress: { fieldNumber: 1, dataType: 'string', minLength: 41, maxLength: 42 },
         ids: {
             fieldNumber: 2,
             type: 'array',

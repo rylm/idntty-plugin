@@ -49,7 +49,7 @@ export const validateFeatureSchema = {
     type: 'object',
     required: ['recipientAddress', 'features'],
     properties: {
-        recipientAddress: { fieldNumber: 1, dataType: 'string', minLength: 42, maxLength: 42 },
+        recipientAddress: { fieldNumber: 1, dataType: 'string', minLength: 41, maxLength: 42 },
         features: {
             fieldNumber: 2,
             type: 'array',
@@ -73,7 +73,7 @@ export const invalidateFeatureSchema = {
     type: 'object',
     required: ['recipientAddress', 'features'],
     properties: {
-        recipientAddress: { fieldNumber: 1, dataType: 'string', minLength: 42, maxLength: 42 },
+        recipientAddress: { fieldNumber: 1, dataType: 'string', minLength: 41, maxLength: 42 },
         features: {
             fieldNumber: 2,
             type: 'array',
