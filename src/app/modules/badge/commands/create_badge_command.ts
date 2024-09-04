@@ -7,7 +7,7 @@ import {
 } from 'lisk-sdk';
 
 import { createBadgeSchema } from '../schema';
-// import { IdentityMethod } from '../../identity/method';
+import { IdentityMethod } from '../../identity/method';
 import { AccountStore } from '../stores/account';
 
 interface Params {
@@ -18,9 +18,9 @@ export class CreateBadgeCommand extends BaseCommand {
     public schema = createBadgeSchema;
     // private _method!: IdentityMethod;
 
-    // public init(args: { method: IdentityMethod }) {
-    //     this._method = args.method;
-    // }
+    public init(_args: { method: IdentityMethod }) {
+        // this._method = args.method;
+    }
 
     public async verify(_context: CommandVerifyContext<Params>): Promise<VerificationResult> {
         // const isAuthority = await this._method.getAccountType(
