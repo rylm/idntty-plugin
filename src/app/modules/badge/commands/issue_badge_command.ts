@@ -18,21 +18,21 @@ interface Params {
 
 export class IssueBadgeCommand extends BaseCommand {
     public schema = issueBadgeSchema;
-    private _method!: IdentityMethod;
+    // private _method!: IdentityMethod;
 
-    public init(args: { method: IdentityMethod }) {
-        this._method = args.method;
+    public init(_args: { method: IdentityMethod }) {
+        // this._method = args.method;
     }
 
     public async verify(_context: CommandVerifyContext<Params>): Promise<VerificationResult> {
-        const isAuthority = await this._method.getAccountType(
-            _context.getMethodContext(),
-            _context.transaction.senderAddress,
-        );
+        // const isAuthority = await this._method.getAccountType(
+        //     _context.getMethodContext(),
+        //     _context.transaction.senderAddress,
+        // );
 
-        if (!isAuthority) {
-            return { status: VerifyStatus.FAIL, error: new Error('Sender is not an authority') };
-        }
+        // if (!isAuthority) {
+        //     return { status: VerifyStatus.FAIL, error: new Error('Sender is not an authority') };
+        // }
 
         return { status: VerifyStatus.OK };
     }
