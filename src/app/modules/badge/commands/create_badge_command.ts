@@ -23,21 +23,21 @@ export class CreateBadgeCommand extends BaseCommand {
     }
 
     public async verify(_context: CommandVerifyContext<Params>): Promise<VerificationResult> {
-        const isAuthority = await this._method.getAccountType(
-            _context.getMethodContext(),
-            _context.transaction.senderAddress,
-        );
-        if (!isAuthority) {
-            return { status: VerifyStatus.FAIL, error: new Error('Sender is not an authority') };
-        }
+        // const isAuthority = await this._method.getAccountType(
+        //     _context.getMethodContext(),
+        //     _context.transaction.senderAddress,
+        // );
+        // if (!isAuthority) {
+        //     return { status: VerifyStatus.FAIL, error: new Error('Sender is not an authority') };
+        // }
 
-        const { id } = _context.params;
-        const { senderAddress } = _context.transaction;
-        const accountStore = this.stores.get(AccountStore);
-        const account = await accountStore.get(_context, senderAddress);
-        if (account.credentials.find(c => c.id === id)) {
-            return { status: VerifyStatus.FAIL, error: new Error('Badge already exists') };
-        }
+        // const { id } = _context.params;
+        // const { senderAddress } = _context.transaction;
+        // const accountStore = this.stores.get(AccountStore);
+        // const account = await accountStore.get(_context, senderAddress);
+        // if (account.credentials.find(c => c.id === id)) {
+        //     return { status: VerifyStatus.FAIL, error: new Error('Badge already exists') };
+        // }
 
         return { status: VerifyStatus.OK };
     }
