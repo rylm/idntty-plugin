@@ -102,3 +102,21 @@ enum AuthenticatorTransportFuture {
   smart_card
   usb
 }
+
+enum FaucetStatus {
+  pending
+  completed
+  failed
+}
+
+model Faucet {
+  id                Int          @id @default(autoincrement())
+  public_key        String
+  email             String
+  amount            BigInt
+  timestamp         DateTime
+  status            FaucetStatus
+  verification_code String
+
+  @@map("faucet")
+}
