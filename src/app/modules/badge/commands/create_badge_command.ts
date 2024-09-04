@@ -31,13 +31,13 @@ export class CreateBadgeCommand extends BaseCommand {
         //     return { status: VerifyStatus.FAIL, error: new Error('Sender is not an authority') };
         // }
 
-        // const { id } = _context.params;
-        // const { senderAddress } = _context.transaction;
-        // const accountStore = this.stores.get(AccountStore);
-        // const account = await accountStore.get(_context, senderAddress);
-        // if (account.credentials.find(c => c.id === id)) {
-        //     return { status: VerifyStatus.FAIL, error: new Error('Badge already exists') };
-        // }
+        const { id } = _context.params;
+        const { senderAddress } = _context.transaction;
+        const accountStore = this.stores.get(AccountStore);
+        const account = await accountStore.get(_context, senderAddress);
+        if (account.credentials.find(c => c.id === id)) {
+            return { status: VerifyStatus.FAIL, error: new Error('Badge already exists') };
+        }
 
         return { status: VerifyStatus.OK };
     }
