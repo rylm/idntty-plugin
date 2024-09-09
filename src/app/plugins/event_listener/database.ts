@@ -17,7 +17,10 @@ export const saveUserNotifications = async (notifications: Notification[]) =>
                 public_key: publicKey,
                 for_public_key: forPublicKey,
                 type: notificationType,
-                data: JSON.stringify(data),
+                data: JSON.stringify(data, (_, value) =>
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+                    typeof value === 'bigint' ? value.toString() : value,
+                ),
                 timestamp,
             };
         }),
@@ -61,7 +64,10 @@ export const saveUserTransactions = async (transactions: Transaction[]) =>
                     block_height: blockHeight,
                     price,
                     tx_id: txID,
-                    data: JSON.stringify(data),
+                    data: JSON.stringify(data, (_, value) =>
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+                        typeof value === 'bigint' ? value.toString() : value,
+                    ),
                     timestamp,
                 };
             },
