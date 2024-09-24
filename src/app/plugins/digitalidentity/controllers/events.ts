@@ -106,3 +106,44 @@ export const getTransactions =
             ),
         );
     };
+
+export const getNumberOfTransactions =
+    () =>
+    async (
+        req: FastifyRequest<{
+            Querystring: {
+                publicKey?: string;
+                forPublicKey?: string;
+                transactionType?: string;
+                blockHeight?: number;
+                txID?: string;
+                startDate?: number;
+                endDate?: number;
+            };
+        }>,
+        res: FastifyReply,
+    ) => {
+        const { publicKey, forPublicKey, transactionType, blockHeight, txID, startDate, endDate } =
+            req.query;
+
+        const transactions = await getUserTransactions(
+            publicKey,
+            forPublicKey,
+            transactionType,
+            blockHeight,
+            txID,
+        );
+
+        if (!startDate || !endDate) {
+            return res.send(transactions.length);
+        }
+
+        return res.send(
+            transactions.filter(transaction =>
+                isWithinInterval(transaction.timestamp, {
+                    start: new Date(startDate * 1000),
+                    end: new Date(endDate * 1000),
+                }),
+            ).length,
+        );
+    };

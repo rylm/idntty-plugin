@@ -81,6 +81,7 @@ export class DigitalidentityPlugin extends BasePlugin {
 
         server.get('/get-notifications', controllers.events.getNotifications());
         server.get('/get-transactions', controllers.events.getTransactions());
+        server.get('/get-number-of-transactions', controllers.events.getNumberOfTransactions());
 
         server.listen({ port: 8000 });
         console.log('DI:Loaded');
