@@ -1,11 +1,14 @@
 /* eslint-disable class-methods-use-this */
 
+import { inspect } from 'util';
+
 import {
     BaseCommand,
     CommandVerifyContext,
     CommandExecuteContext,
     VerificationResult,
     VerifyStatus,
+    cryptography,
 } from 'lisk-sdk';
 
 import { AccountStore } from '../stores/account';
@@ -42,7 +45,8 @@ export class SetFeatureCommand extends BaseCommand {
         const { senderAddress } = _context.transaction;
         const accountSubstore = this.stores.get(AccountStore);
 
-        console.log('Features:', features);
+        console.log('Sender address:', senderAddress.toString('hex'));
+        console.log('Converted:', cryptography.address.getLisk32AddressFromAddress(senderAddress));
 
         for (const feature of features) {
             let isUnique = true;
@@ -90,5 +94,13 @@ export class SetFeatureCommand extends BaseCommand {
                 });
             }
         }
+
+        console.log('Features:', features);
+        console.log(
+            inspect(await accountSubstore.get(_context, senderAddress), {
+                depth: null,
+                colors: true,
+            }),
+        );
     }
 }
