@@ -1,7 +1,5 @@
 /* eslint-disable class-methods-use-this */
 
-import { inspect } from 'util';
-
 import {
     BaseCommand,
     CommandVerifyContext,
@@ -11,7 +9,7 @@ import {
     cryptography,
 } from 'lisk-sdk';
 
-import { AccountStore } from '../stores/account';
+import { AccountStore, AccountStoreData } from '../stores/account';
 
 import { setFeatureSchema } from '../schema';
 
@@ -53,9 +51,19 @@ export class SetFeatureCommand extends BaseCommand {
 
             console.log('Currently on feature:', feature);
 
-            const account = await accountSubstore.get(_context, senderAddress);
-
-            console.log('Current account features:', account.features);
+            let account: AccountStoreData;
+            try {
+                account = await accountSubstore.get(_context, senderAddress);
+                console.log('Current account features:', account.features);
+            } catch (error) {
+                console.error(error);
+                console.log('Account not found, creating it for:', senderAddress);
+                account = {
+                    features: [],
+                    verifications: [],
+                    isAuthority: false,
+                };
+            }
 
             for (const accountFeature of account.features) {
                 console.log('Currently on account feature:', accountFeature);
@@ -95,12 +103,6 @@ export class SetFeatureCommand extends BaseCommand {
             }
         }
 
-        console.log('Features:', features);
-        console.log(
-            inspect(await accountSubstore.get(_context, senderAddress), {
-                depth: null,
-                colors: true,
-            }),
-        );
+        console.log('New account data:', await accountSubstore.get(_context, senderAddress));
     }
 }
