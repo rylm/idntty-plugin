@@ -80,16 +80,29 @@ export const getUserTransactions = async (
     transactionType?: string,
     blockHeight?: number,
     txID?: string,
-) =>
-    prisma.transaction.findMany({
-        where: {
-            public_key: publicKey,
-            for_public_key: forPublicKey,
-            type: transactionType,
-            block_height: blockHeight,
-            tx_id: txID,
-        },
+    or = false,
+) => {
+    const whereClause = or
+        ? {
+              OR: [
+                  publicKey ? { public_key: publicKey } : null,
+                  forPublicKey ? { for_public_key: forPublicKey } : null,
+                  transactionType ? { type: transactionType } : null,
+                  blockHeight ? { block_height: blockHeight } : null,
+                  txID ? { tx_id: txID } : null,
+              ].filter(clause => clause !== null),
+          }
+        : {
+              public_key: publicKey,
+              for_public_key: forPublicKey,
+              type: transactionType,
+              block_height: blockHeight,
+              tx_id: txID,
+          };
+    return prisma.transaction.findMany({
+        where: whereClause,
         orderBy: {
             timestamp: 'asc',
         },
     });
+};

@@ -57,6 +57,7 @@ export const getTransactions =
                 startDate?: number;
                 endDate?: number;
                 amount?: number;
+                or?: boolean;
             };
         }>,
         res: FastifyReply,
@@ -70,6 +71,7 @@ export const getTransactions =
             startDate,
             endDate,
             amount,
+            or,
         } = req.query;
 
         if (amount && startDate && endDate) {
@@ -82,6 +84,7 @@ export const getTransactions =
             transactionType,
             blockHeight,
             txID,
+            or,
         );
 
         const serializedTransactions = transactions.map(transaction => ({
@@ -119,12 +122,21 @@ export const getNumberOfTransactions =
                 txID?: string;
                 startDate?: number;
                 endDate?: number;
+                or?: boolean;
             };
         }>,
         res: FastifyReply,
     ) => {
-        const { publicKey, forPublicKey, transactionType, blockHeight, txID, startDate, endDate } =
-            req.query;
+        const {
+            publicKey,
+            forPublicKey,
+            transactionType,
+            blockHeight,
+            txID,
+            startDate,
+            endDate,
+            or,
+        } = req.query;
 
         const transactions = await getUserTransactions(
             publicKey,
@@ -132,6 +144,7 @@ export const getNumberOfTransactions =
             transactionType,
             blockHeight,
             txID,
+            or,
         );
 
         if (!startDate || !endDate) {
