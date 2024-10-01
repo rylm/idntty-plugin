@@ -84,13 +84,7 @@ export const getUserTransactions = async (
 ) => {
     const whereClause = or
         ? {
-              OR: [
-                  publicKey ? { public_key: publicKey } : null,
-                  forPublicKey ? { for_public_key: forPublicKey } : null,
-                  transactionType ? { type: transactionType } : null,
-                  blockHeight ? { block_height: blockHeight } : null,
-                  txID ? { tx_id: txID } : null,
-              ].filter(clause => clause !== null),
+              OR: [{ public_key: publicKey }, { for_public_key: forPublicKey }],
           }
         : {
               public_key: publicKey,
