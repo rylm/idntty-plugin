@@ -8,13 +8,14 @@ datasource db {
 }
 
 model User {
-  public_key  String                @id
-  username    String
-  layout      Json
-  isAuthority Boolean
-  devices     AuthenticatorDevice[]
-  badges      Badge[]
-  userData    UserData[]            @relation("UserToUserData")
+  public_key        String                @id
+  username          String
+  layout            Json
+  isAuthority       Boolean
+  devices           AuthenticatorDevice[]
+  badges            Badge[]
+  userData          UserData[]            @relation("UserToUserData")
+  badge_collections String[]              @default([])
 
   @@map("users")
 }
@@ -93,6 +94,18 @@ model Transaction {
   @@map("transactions")
 }
 
+model Faucet {
+  id                Int          @id @default(autoincrement())
+  public_key        String
+  email             String
+  amount            BigInt
+  timestamp         DateTime
+  status            FaucetStatus
+  verification_code String
+
+  @@map("faucet")
+}
+
 enum AuthenticatorTransportFuture {
   ble
   cable
@@ -107,16 +120,4 @@ enum FaucetStatus {
   pending
   completed
   failed
-}
-
-model Faucet {
-  id                Int          @id @default(autoincrement())
-  public_key        String
-  email             String
-  amount            BigInt
-  timestamp         DateTime
-  status            FaucetStatus
-  verification_code String
-
-  @@map("faucet")
 }
