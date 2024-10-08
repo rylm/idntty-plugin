@@ -8,6 +8,8 @@ import {
     getSharedUserDataEntry,
     saveUserDataEntry,
     getIsAuthority,
+    getBadgeCollections,
+    addBadgeCollection,
 } from '../database';
 
 export interface DataEntry {
@@ -125,4 +127,37 @@ export const getUserIdentity =
         const isAuthority = await getIsAuthority(publicKey);
 
         return res.send({ isAuthority });
+    };
+
+export const getCollections =
+    () =>
+    async (
+        req: FastifyRequest<{
+            Querystring: { publicKey: string };
+        }>,
+        res: FastifyReply,
+    ) => {
+        const { publicKey } = req.query;
+
+        const collections = await getBadgeCollections(publicKey);
+
+        return res.send(collections);
+    };
+
+export const addCollection =
+    () =>
+    async (
+        req: FastifyRequest<{
+            Body: {
+                publicKey: string;
+                collection: string;
+            };
+        }>,
+        res: FastifyReply,
+    ) => {
+        const { publicKey, collection } = req.body;
+
+        await addBadgeCollection(publicKey, collection);
+
+        return res.send({ success: true });
     };

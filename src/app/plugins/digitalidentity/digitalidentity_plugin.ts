@@ -83,6 +83,13 @@ export class DigitalidentityPlugin extends BasePlugin {
         server.get('/get-transactions', controllers.events.getTransactions());
         server.get('/get-number-of-transactions', controllers.events.getNumberOfTransactions());
 
+        server.get('/get-collections', controllers.data.getCollections());
+        server.post(
+            '/add-collection',
+            { preHandler: controllers.auth.jwtVerificationPreHandler() },
+            controllers.data.addCollection(),
+        );
+
         server.listen({ port: 8000 });
         console.log('DI:Loaded');
     }

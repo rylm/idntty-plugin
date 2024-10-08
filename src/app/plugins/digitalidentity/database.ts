@@ -351,3 +351,32 @@ export const getBadgeImagesByPublicKey = async (publicKey: string) =>
             public_key: publicKey,
         },
     });
+
+export const getBadgeCollections = async (publicKey: string) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            public_key: publicKey,
+        },
+        select: {
+            badge_collections: true,
+        },
+    });
+
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    return user.badge_collections;
+};
+
+export const addBadgeCollection = async (publicKey: string, collection: string) =>
+    prisma.user.update({
+        where: {
+            public_key: publicKey,
+        },
+        data: {
+            badge_collections: {
+                push: collection,
+            },
+        },
+    });
