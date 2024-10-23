@@ -380,3 +380,43 @@ export const addBadgeCollection = async (publicKey: string, collection: string) 
             },
         },
     });
+
+export const getBadgeTags = async (publicKey: string) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            public_key: publicKey,
+        },
+        select: {
+            badge_tags: true,
+        },
+    });
+
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    return user.badge_tags;
+};
+
+export const addBadgeTags = async (publicKey: string, tags: string[]) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            public_key: publicKey,
+        },
+    });
+
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    user.badge_tags.push(...tags);
+
+    return prisma.user.update({
+        where: {
+            public_key: publicKey,
+        },
+        data: {
+            badge_tags: user.badge_tags,
+        },
+    });
+};

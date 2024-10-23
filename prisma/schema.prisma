@@ -16,6 +16,7 @@ model User {
   badges            Badge[]
   userData          UserData[]            @relation("UserToUserData")
   badge_collections String[]              @default([])
+  badge_tags        String[]              @default([])
 
   @@map("users")
 }

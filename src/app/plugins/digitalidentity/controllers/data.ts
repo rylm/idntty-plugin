@@ -10,6 +10,8 @@ import {
     getIsAuthority,
     getBadgeCollections,
     addBadgeCollection,
+    getBadgeTags,
+    addBadgeTags,
 } from '../database';
 
 export interface DataEntry {
@@ -158,6 +160,39 @@ export const addCollection =
         const { publicKey, collection } = req.body;
 
         await addBadgeCollection(publicKey, collection);
+
+        return res.send({ success: true });
+    };
+
+export const getTags =
+    () =>
+    async (
+        req: FastifyRequest<{
+            Querystring: { publicKey: string };
+        }>,
+        res: FastifyReply,
+    ) => {
+        const { publicKey } = req.query;
+
+        const tags = await getBadgeTags(publicKey);
+
+        return res.send(tags);
+    };
+
+export const addTags =
+    () =>
+    async (
+        req: FastifyRequest<{
+            Body: {
+                publicKey: string;
+                tags: string[];
+            };
+        }>,
+        res: FastifyReply,
+    ) => {
+        const { publicKey, tags } = req.body;
+
+        await addBadgeTags(publicKey, tags);
 
         return res.send({ success: true });
     };

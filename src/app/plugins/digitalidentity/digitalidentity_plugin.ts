@@ -90,6 +90,13 @@ export class DigitalidentityPlugin extends BasePlugin {
             controllers.data.addCollection(),
         );
 
+        server.get('/get-tags', controllers.data.getTags());
+        server.post(
+            '/add-tags',
+            { preHandler: controllers.auth.jwtVerificationPreHandler() },
+            controllers.data.addTags(),
+        );
+
         server.listen({ port: 8000 });
         console.log('DI:Loaded');
     }
