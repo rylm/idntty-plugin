@@ -24,7 +24,7 @@ export const getNotifications =
             return res.status(400).send('Amount, startDate and endDate cannot be used together');
         }
 
-        const notifications = await getUserNotifications(publicKey, forPublicKey, 'share');
+        const notifications = await getUserNotifications(publicKey, forPublicKey);
 
         if (amount) {
             return res.send(notifications.slice(-amount));
