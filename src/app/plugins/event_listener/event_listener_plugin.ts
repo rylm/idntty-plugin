@@ -2,7 +2,7 @@ import { BasePlugin } from 'lisk-sdk';
 import type { BlockJSON } from '@liskhq/lisk-api-client/dist-node/types';
 import { inspect } from 'util';
 
-import { saveUserTransactions } from './database';
+import { saveUserTransactions, saveUserNotifications } from './database';
 
 export class EventListenerPlugin extends BasePlugin {
     public get nodeModulePath(): string {
@@ -31,6 +31,16 @@ export class EventListenerPlugin extends BasePlugin {
                     txID: tx.id.toString('hex'),
                     data: tx.params,
                 })),
+            );
+            await saveUserNotifications(
+                block.transactions
+                    .filter(tx => tx.command === 'issueBadge')
+                    .map(tx => ({
+                        publicKey: tx.senderPublicKey.toString('hex'),
+                        forPublicKey: tx.params.recipientAddress as string,
+                        notificationType: 'issueBadge',
+                        data: tx.params,
+                    })),
             );
         });
     }
