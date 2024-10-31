@@ -26,16 +26,11 @@ export const saveUserNotifications = async (notifications: Notification[]) =>
         }),
     });
 
-export const getUserNotifications = async (
-    publicKey?: string,
-    forPublicKey?: string,
-    notificationType?: string,
-) =>
+export const getUserNotifications = async (publicKey?: string, forPublicKey?: string) =>
     prisma.notification.findMany({
         where: {
             public_key: publicKey,
             for_public_key: forPublicKey,
-            type: notificationType,
         },
         orderBy: {
             timestamp: 'asc',
