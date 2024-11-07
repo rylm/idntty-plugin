@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { cryptography } from 'lisk-sdk';
 
 const prisma = new PrismaClient();
 
@@ -30,7 +31,16 @@ export const getUserNotifications = async (publicKey?: string, forPublicKey?: st
     prisma.notification.findMany({
         where: {
             public_key: publicKey,
-            for_public_key: forPublicKey,
+            for_public_key: forPublicKey
+                ? {
+                      in: [
+                          forPublicKey,
+                          cryptography.address.getLisk32AddressFromPublicKey(
+                              Buffer.from(forPublicKey, 'hex'),
+                          ),
+                      ],
+                  }
+                : undefined,
         },
         orderBy: {
             timestamp: 'asc',
