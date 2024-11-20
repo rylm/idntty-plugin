@@ -13,8 +13,8 @@ export const setFeatureSchema = {
                 type: 'object',
                 required: ['label', 'value'],
                 properties: {
-                    label: { fieldNumber: 1, dataType: 'string', maxLength: 16 },
-                    value: { fieldNumber: 2, dataType: 'string', maxLength: 32 },
+                    label: { fieldNumber: 1, dataType: 'string', maxLength: 40 },
+                    value: { fieldNumber: 2, dataType: 'string', maxLength: 1024 },
                 },
             },
         },
@@ -36,7 +36,7 @@ export const removeFeatureSchema = {
                 type: 'object',
                 required: ['label'],
                 properties: {
-                    label: { fieldNumber: 1, dataType: 'string', maxLength: 16 },
+                    label: { fieldNumber: 1, dataType: 'string', maxLength: 40 },
                 },
             },
         },
@@ -59,8 +59,8 @@ export const validateFeatureSchema = {
                 type: 'object',
                 required: ['label', 'value'],
                 properties: {
-                    label: { fieldNumber: 1, dataType: 'string', maxLength: 16 },
-                    value: { fieldNumber: 2, dataType: 'string', maxLength: 32 },
+                    label: { fieldNumber: 1, dataType: 'string', maxLength: 40 },
+                    value: { fieldNumber: 2, dataType: 'string', maxLength: 1024 },
                 },
             },
         },
@@ -83,7 +83,7 @@ export const invalidateFeatureSchema = {
                 type: 'object',
                 required: ['label'],
                 properties: {
-                    label: { fieldNumber: 1, dataType: 'string', maxLength: 16 },
+                    label: { fieldNumber: 1, dataType: 'string', maxLength: 40 },
                 },
             },
         },
