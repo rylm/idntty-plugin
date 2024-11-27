@@ -28,7 +28,7 @@ export const getBalance =
         try {
             const balances = await apiClient.invoke('token_getBalance', {
                 address,
-                tokenID: 'abcdef0100000000',
+                tokenID: '0000000000000000',
             });
             res.send(balances);
         } catch (error) {
