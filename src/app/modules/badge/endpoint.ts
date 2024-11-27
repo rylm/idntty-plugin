@@ -1,3 +1,3 @@
-import { BaseEndpoint } from 'lisk-sdk';
+import { Modules } from 'klayr-sdk';
 
-export class BadgeEndpoint extends BaseEndpoint {}
+export class BadgeEndpoint extends Modules.BaseEndpoint {}

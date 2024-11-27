@@ -1,13 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
-import {
-    BaseCommand,
-    CommandVerifyContext,
-    CommandExecuteContext,
-    VerificationResult,
-    VerifyStatus,
-    cryptography,
-} from 'lisk-sdk';
+import { Modules, StateMachine, cryptography } from 'klayr-sdk';
 
 import { AccountStore } from '../stores/account';
 
@@ -21,10 +14,12 @@ interface Params {
     }[];
 }
 
-export class ValidateFeatureCommand extends BaseCommand {
+export class ValidateFeatureCommand extends Modules.BaseCommand {
     public schema = validateFeatureSchema;
 
-    public async verify(_context: CommandVerifyContext<Params>): Promise<VerificationResult> {
+    public async verify(
+        _context: StateMachine.CommandVerifyContext<Params>,
+    ): Promise<StateMachine.VerificationResult> {
         const { params } = _context;
 
         const uniqueLabels: string[] = [];
@@ -36,19 +31,19 @@ export class ValidateFeatureCommand extends BaseCommand {
             }
         });
 
-        return { status: VerifyStatus.OK };
+        return { status: StateMachine.VerifyStatus.OK };
     }
 
-    public async execute(_context: CommandExecuteContext<Params>): Promise<void> {
+    public async execute(_context: StateMachine.CommandExecuteContext<Params>): Promise<void> {
         const { senderAddress, id } = _context.transaction;
         const { recipientAddress, features } = _context.params;
         const accountSubstore = this.stores.get(AccountStore);
 
-        cryptography.address.validateLisk32Address(recipientAddress);
+        cryptography.address.validateKlayr32Address(recipientAddress);
 
         const recipientAccount = await accountSubstore.get(
             _context,
-            cryptography.address.getAddressFromLisk32Address(recipientAddress),
+            cryptography.address.getAddressFromKlayr32Address(recipientAddress),
         );
 
         if (!recipientAccount) {
@@ -95,7 +90,7 @@ export class ValidateFeatureCommand extends BaseCommand {
 
         accountSubstore.set(
             _context,
-            cryptography.address.getAddressFromLisk32Address(recipientAddress),
+            cryptography.address.getAddressFromKlayr32Address(recipientAddress),
             {
                 ...recipientAccount,
                 verifications: [...recipientAccount.verifications, ...validatedFeatures],

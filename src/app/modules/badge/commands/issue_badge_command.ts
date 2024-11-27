@@ -1,11 +1,4 @@
-import {
-    BaseCommand,
-    CommandVerifyContext,
-    CommandExecuteContext,
-    VerificationResult,
-    VerifyStatus,
-    cryptography,
-} from 'lisk-sdk';
+import { cryptography, Modules, StateMachine } from 'klayr-sdk';
 
 import { issueBadgeSchema } from '../schema';
 import { IdentityMethod } from '../../identity/method';
@@ -16,7 +9,7 @@ interface Params {
     ids: string[];
 }
 
-export class IssueBadgeCommand extends BaseCommand {
+export class IssueBadgeCommand extends Modules.BaseCommand {
     public schema = issueBadgeSchema;
     // private _method!: IdentityMethod;
 
@@ -24,7 +17,9 @@ export class IssueBadgeCommand extends BaseCommand {
         // this._method = args.method;
     }
 
-    public async verify(_context: CommandVerifyContext<Params>): Promise<VerificationResult> {
+    public async verify(
+        _context: StateMachine.CommandVerifyContext<Params>,
+    ): Promise<StateMachine.VerificationResult> {
         // const isAuthority = await this._method.getAccountType(
         //     _context.getMethodContext(),
         //     _context.transaction.senderAddress,
@@ -34,19 +29,19 @@ export class IssueBadgeCommand extends BaseCommand {
         //     return { status: VerifyStatus.FAIL, error: new Error('Sender is not an authority') };
         // }
 
-        return { status: VerifyStatus.OK };
+        return { status: StateMachine.VerifyStatus.OK };
     }
 
-    public async execute(_context: CommandExecuteContext<Params>): Promise<void> {
+    public async execute(_context: StateMachine.CommandExecuteContext<Params>): Promise<void> {
         const { recipientAddress, ids } = _context.params;
         const { id } = _context.transaction;
         const accountStore = this.stores.get(AccountStore);
 
-        cryptography.address.validateLisk32Address(recipientAddress);
+        cryptography.address.validateKlayr32Address(recipientAddress);
 
         const recipientAccount = await accountStore.get(
             _context,
-            cryptography.address.getAddressFromLisk32Address(recipientAddress),
+            cryptography.address.getAddressFromKlayr32Address(recipientAddress),
         );
 
         if (!recipientAccount) {
@@ -55,7 +50,7 @@ export class IssueBadgeCommand extends BaseCommand {
 
         await accountStore.set(
             _context,
-            cryptography.address.getAddressFromLisk32Address(recipientAddress),
+            cryptography.address.getAddressFromKlayr32Address(recipientAddress),
             {
                 ...recipientAccount,
                 awards: [

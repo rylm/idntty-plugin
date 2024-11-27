@@ -1,4 +1,4 @@
-import { BaseEvent } from 'lisk-sdk';
+import { Modules } from 'klayr-sdk';
 
 export interface NewValidationEventData {
     recipientAddress: string;
@@ -31,6 +31,6 @@ export const newValidationEventSchema = {
     },
 };
 
-export class NewValidationEvent extends BaseEvent<NewValidationEventData> {
+export class NewValidationEvent extends Modules.BaseEvent<NewValidationEventData> {
     public schema = newValidationEventSchema;
 }

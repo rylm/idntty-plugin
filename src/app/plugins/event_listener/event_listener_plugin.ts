@@ -1,10 +1,10 @@
-import { BasePlugin, cryptography } from 'lisk-sdk';
-import type { BlockJSON } from '@liskhq/lisk-api-client/dist-node/types';
+import { Plugins, cryptography } from 'klayr-sdk';
+import type { BlockJSON } from '@klayr/api-client/dist-node/types';
 import { inspect } from 'util';
 
 import { saveUserTransactions, saveUserNotifications } from './database';
 
-export class EventListenerPlugin extends BasePlugin {
+export class EventListenerPlugin extends Plugins.BasePlugin {
     public get nodeModulePath(): string {
         return __filename;
     }
@@ -25,7 +25,7 @@ export class EventListenerPlugin extends BasePlugin {
                     ) {
                         forPublicKey = tx.params.recipientAddress as string;
                     } else if (tx.command === 'transfer') {
-                        forPublicKey = cryptography.address.getLisk32AddressFromAddress(
+                        forPublicKey = cryptography.address.getKlayr32AddressFromAddress(
                             tx.params.recipientAddress as Buffer,
                         );
                     }

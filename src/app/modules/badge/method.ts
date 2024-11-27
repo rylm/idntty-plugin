@@ -1,3 +1,3 @@
-import { BaseMethod } from 'lisk-sdk';
+import { Modules } from 'klayr-sdk';
 
-export class BadgeMethod extends BaseMethod {}
+export class BadgeMethod extends Modules.BaseMethod {}

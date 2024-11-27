@@ -1,10 +1,4 @@
-import {
-    BaseCommand,
-    CommandVerifyContext,
-    CommandExecuteContext,
-    VerificationResult,
-    VerifyStatus,
-} from 'lisk-sdk';
+import { Modules, StateMachine } from 'klayr-sdk';
 
 import { createBadgeSchema } from '../schema';
 import { IdentityMethod } from '../../identity/method';
@@ -14,7 +8,7 @@ interface Params {
     id: string;
 }
 
-export class CreateBadgeCommand extends BaseCommand {
+export class CreateBadgeCommand extends Modules.BaseCommand {
     public schema = createBadgeSchema;
     // private _method!: IdentityMethod;
 
@@ -22,7 +16,9 @@ export class CreateBadgeCommand extends BaseCommand {
         // this._method = args.method;
     }
 
-    public async verify(_context: CommandVerifyContext<Params>): Promise<VerificationResult> {
+    public async verify(
+        _context: StateMachine.CommandVerifyContext<Params>,
+    ): Promise<StateMachine.VerificationResult> {
         // const isAuthority = await this._method.getAccountType(
         //     _context.getMethodContext(),
         //     _context.transaction.senderAddress,
@@ -39,10 +35,10 @@ export class CreateBadgeCommand extends BaseCommand {
         //     return { status: VerifyStatus.FAIL, error: new Error('Badge already exists') };
         // }
 
-        return { status: VerifyStatus.OK };
+        return { status: StateMachine.VerifyStatus.OK };
     }
 
-    public async execute(_context: CommandExecuteContext<Params>): Promise<void> {
+    public async execute(_context: StateMachine.CommandExecuteContext<Params>): Promise<void> {
         const { id } = _context.params;
         const { senderAddress } = _context.transaction;
         const accountStore = this.stores.get(AccountStore);

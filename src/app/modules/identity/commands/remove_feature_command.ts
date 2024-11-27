@@ -1,12 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
-import {
-    BaseCommand,
-    CommandVerifyContext,
-    CommandExecuteContext,
-    VerificationResult,
-    VerifyStatus,
-} from 'lisk-sdk';
+import { Modules, StateMachine } from 'klayr-sdk';
 
 import { AccountStore } from '../stores/account';
 
@@ -18,11 +12,13 @@ interface Params {
     }[];
 }
 
-export class RemoveFeatureCommand extends BaseCommand {
+export class RemoveFeatureCommand extends Modules.BaseCommand {
     public schema = removeFeatureSchema;
 
     // eslint-disable-next-line @typescript-eslint/require-await
-    public async verify(_context: CommandVerifyContext<Params>): Promise<VerificationResult> {
+    public async verify(
+        _context: StateMachine.CommandVerifyContext<Params>,
+    ): Promise<StateMachine.VerificationResult> {
         const { params } = _context;
 
         const uniqueLabels: string[] = [];
@@ -34,10 +30,10 @@ export class RemoveFeatureCommand extends BaseCommand {
             }
         });
 
-        return { status: VerifyStatus.OK };
+        return { status: StateMachine.VerifyStatus.OK };
     }
 
-    public async execute(_context: CommandExecuteContext<Params>): Promise<void> {
+    public async execute(_context: StateMachine.CommandExecuteContext<Params>): Promise<void> {
         const { features } = _context.params;
         const { senderAddress } = _context.transaction;
         const accountSubstore = this.stores.get(AccountStore);

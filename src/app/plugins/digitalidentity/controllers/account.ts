@@ -1,8 +1,8 @@
-import { BasePlugin } from 'lisk-sdk';
+import { Plugins } from 'klayr-sdk';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 export const get =
-    (apiClient: BasePlugin['apiClient']) =>
+    (apiClient: Plugins.BasePlugin['apiClient']) =>
     async (
         req: FastifyRequest<{ Querystring: { address: string } }>,
         res: FastifyReply,
@@ -18,7 +18,7 @@ export const get =
     };
 
 export const getBalance =
-    (apiClient: BasePlugin['apiClient']) =>
+    (apiClient: Plugins.BasePlugin['apiClient']) =>
     async (
         req: FastifyRequest<{ Querystring: { address: string } }>,
         res: FastifyReply,

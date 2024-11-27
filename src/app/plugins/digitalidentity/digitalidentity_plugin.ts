@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
-import { BasePlugin } from 'lisk-sdk';
+import { Plugins } from 'klayr-sdk';
 
 import Fastify from 'fastify';
 import fastifyCors from '@fastify/cors';
@@ -14,7 +14,7 @@ server.register(fastifyCors, {
     credentials: true,
 });
 
-export class DigitalidentityPlugin extends BasePlugin {
+export class DigitalidentityPlugin extends Plugins.BasePlugin {
     public endpoint = new Endpoint();
 
     public get nodeModulePath(): string {

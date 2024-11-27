@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { cryptography } from 'lisk-sdk';
+import { cryptography } from 'klayr-sdk';
 
 const prisma = new PrismaClient();
 
@@ -35,7 +35,7 @@ export const getUserNotifications = async (publicKey?: string, forPublicKey?: st
                 ? {
                       in: [
                           forPublicKey,
-                          cryptography.address.getLisk32AddressFromPublicKey(
+                          cryptography.address.getKlayr32AddressFromPublicKey(
                               Buffer.from(forPublicKey, 'hex'),
                           ),
                       ],
