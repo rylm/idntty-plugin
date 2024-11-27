@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import { BaseModule, ModuleMetadata, ModuleInitArgs } from 'lisk-sdk';
+import { Modules } from 'klayr-sdk';
 import { ArchiveBadgeCommand } from './commands/archive_badge_command';
 import { ClaimBadgeCommand } from './commands/claim_badge_command';
 import { CreateBadgeCommand } from './commands/create_badge_command';
@@ -13,7 +13,7 @@ import { AccountStore } from './stores/account';
 
 import { IdentityMethod } from '../identity/method';
 
-export class BadgeModule extends BaseModule {
+export class BadgeModule extends Modules.BaseModule {
     private _identityMethod!: IdentityMethod;
     private readonly _createBadgeCommand = new CreateBadgeCommand(this.stores, this.events);
     private readonly _archiveBadgeCommand = new ArchiveBadgeCommand(this.stores, this.events);
@@ -39,7 +39,7 @@ export class BadgeModule extends BaseModule {
         this.events.register(NewBadgeIssuedEvent, new NewBadgeIssuedEvent(this.name));
     }
 
-    public metadata(): ModuleMetadata {
+    public metadata(): Modules.ModuleMetadata {
         return {
             ...this.baseMetadata(),
             endpoints: [],
@@ -48,7 +48,7 @@ export class BadgeModule extends BaseModule {
     }
 
     // Lifecycle hooks
-    public async init(_args: ModuleInitArgs): Promise<void> {
+    public async init(_args: Modules.ModuleInitArgs): Promise<void> {
         // initialize this module when starting a node
         this._createBadgeCommand.init({ method: this._identityMethod });
         this._archiveBadgeCommand.init({ method: this._identityMethod });

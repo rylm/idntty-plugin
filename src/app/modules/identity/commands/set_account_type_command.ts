@@ -1,10 +1,4 @@
-import {
-    BaseCommand,
-    CommandVerifyContext,
-    CommandExecuteContext,
-    VerificationResult,
-    VerifyStatus,
-} from 'lisk-sdk';
+import { Modules, StateMachine } from 'klayr-sdk';
 import { inspect } from 'util';
 
 import { AccountStore } from '../stores/account';
@@ -14,14 +8,16 @@ interface Params {
     isAuthority: boolean;
 }
 
-export class SetAccountTypeCommand extends BaseCommand {
+export class SetAccountTypeCommand extends Modules.BaseCommand {
     public schema = setAccountTypeSchema;
 
-    public async verify(_context: CommandVerifyContext<Params>): Promise<VerificationResult> {
-        return { status: VerifyStatus.OK };
+    public async verify(
+        _context: StateMachine.CommandVerifyContext<Params>,
+    ): Promise<StateMachine.VerificationResult> {
+        return { status: StateMachine.VerifyStatus.OK };
     }
 
-    public async execute(_context: CommandExecuteContext<Params>): Promise<void> {
+    public async execute(_context: StateMachine.CommandExecuteContext<Params>): Promise<void> {
         const { isAuthority } = _context.params;
         const { senderAddress } = _context.transaction;
         const accountSubstore = this.stores.get(AccountStore);

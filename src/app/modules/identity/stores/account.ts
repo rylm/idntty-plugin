@@ -1,4 +1,4 @@
-import { BaseStore } from 'lisk-sdk';
+import { Modules } from 'klayr-sdk';
 
 export interface AccountStoreData {
     features: {
@@ -47,6 +47,6 @@ export const accountStoreSchema = {
     },
 };
 
-export class AccountStore extends BaseStore<AccountStoreData> {
+export class AccountStore extends Modules.BaseStore<AccountStoreData> {
     public schema = accountStoreSchema;
 }

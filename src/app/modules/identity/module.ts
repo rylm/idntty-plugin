@@ -1,8 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/member-ordering */
 
-// import { validator } from '@liskhq/lisk-validator';
-import { BaseModule, /* ModuleInitArgs, */ ModuleMetadata /* utils */ } from 'lisk-sdk';
+import { Modules } from 'klayr-sdk';
 import { InvalidateFeatureCommand } from './commands/invalidate_feature_command';
 import { RemoveFeatureCommand } from './commands/remove_feature_command';
 import { SetFeatureCommand } from './commands/set_feature_command';
@@ -22,7 +21,7 @@ export const defaultConfig = {
     verifications: [],
 };
 
-export class IdentityModule extends BaseModule {
+export class IdentityModule extends Modules.BaseModule {
     public endpoint = new IdentityEndpoint(this.stores, this.offchainStores);
     public method = new IdentityMethod(this.stores, this.events);
     public commands = [
@@ -41,7 +40,7 @@ export class IdentityModule extends BaseModule {
         this.events.register(NewInvalidationEvent, new NewInvalidationEvent(this.name));
     }
 
-    public metadata(): ModuleMetadata {
+    public metadata(): Modules.ModuleMetadata {
         return {
             ...this.baseMetadata(),
             endpoints: [],

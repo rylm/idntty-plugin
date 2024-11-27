@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { Application } from 'lisk-sdk';
+import { Application } from 'klayr-sdk';
 import { DigitalidentityPlugin } from './plugins/digitalidentity';
 import { EventListenerPlugin } from './plugins/event_listener/event_listener_plugin';
 

@@ -1,6 +1,6 @@
-import { BasePluginEndpoint } from 'lisk-sdk';
+import { Plugins } from 'klayr-sdk';
 
-export class Endpoint extends BasePluginEndpoint {
+export class Endpoint extends Plugins.BasePluginEndpoint {
     public async test(): Promise<object> {
         return { test: 'done' };
     }

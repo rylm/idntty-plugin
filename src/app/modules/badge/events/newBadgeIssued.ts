@@ -1,4 +1,4 @@
-import { BaseEvent } from 'lisk-sdk';
+import { Modules } from 'klayr-sdk';
 
 export interface NewBadgeIssuedEventData {
     recipientAddress: string;
@@ -21,6 +21,6 @@ export const newBadgeIssuedEventSchema = {
     },
 };
 
-export class NewBadgeIssuedEvent extends BaseEvent<NewBadgeIssuedEventData> {
+export class NewBadgeIssuedEvent extends Modules.BaseEvent<NewBadgeIssuedEventData> {
     public schema = newBadgeIssuedEventSchema;
 }

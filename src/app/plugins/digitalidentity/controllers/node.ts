@@ -1,8 +1,8 @@
-import { BasePlugin } from 'lisk-sdk';
+import { Plugins } from 'klayr-sdk';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 export const info =
-    (apiClient: BasePlugin['apiClient']) =>
+    (apiClient: Plugins.BasePlugin['apiClient']) =>
     async (_: FastifyRequest, response: FastifyReply): Promise<void> => {
         try {
             const nodeInfo = await apiClient.invoke('system_getNodeInfo');
@@ -19,7 +19,7 @@ export const info =
     };
 
 export const metrics =
-    (apiClient: BasePlugin['apiClient']) =>
+    (apiClient: Plugins.BasePlugin['apiClient']) =>
     async (_: FastifyRequest, response: FastifyReply): Promise<void> => {
         try {
             const nodeMetrics = await apiClient.invoke('system_getMetricsReport');
@@ -36,7 +36,7 @@ export const metrics =
     };
 
 export const schema =
-    (apiClient: BasePlugin['apiClient']) =>
+    (apiClient: Plugins.BasePlugin['apiClient']) =>
     async (_: FastifyRequest, response: FastifyReply): Promise<void> => {
         try {
             const nodeSchema = await apiClient.invoke('system_getSchema');
@@ -53,7 +53,7 @@ export const schema =
     };
 
 export const metadata =
-    (apiClient: BasePlugin['apiClient']) =>
+    (apiClient: Plugins.BasePlugin['apiClient']) =>
     async (_: FastifyRequest, response: FastifyReply): Promise<void> => {
         try {
             const nodeMetadata = await apiClient.invoke('system_getMetadata');

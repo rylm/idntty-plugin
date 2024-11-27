@@ -1,13 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
-import {
-    BaseCommand,
-    CommandVerifyContext,
-    CommandExecuteContext,
-    VerificationResult,
-    VerifyStatus,
-    cryptography,
-} from 'lisk-sdk';
+import { Modules, StateMachine, cryptography } from 'klayr-sdk';
 
 import { AccountStore, AccountStoreData } from '../stores/account';
 
@@ -20,10 +13,12 @@ interface Params {
     }[];
 }
 
-export class SetFeatureCommand extends BaseCommand {
+export class SetFeatureCommand extends Modules.BaseCommand {
     public schema = setFeatureSchema;
 
-    public async verify(_context: CommandVerifyContext<Params>): Promise<VerificationResult> {
+    public async verify(
+        _context: StateMachine.CommandVerifyContext<Params>,
+    ): Promise<StateMachine.VerificationResult> {
         const { params } = _context;
 
         const uniqueLabels: string[] = [];
@@ -35,16 +30,16 @@ export class SetFeatureCommand extends BaseCommand {
             }
         });
 
-        return { status: VerifyStatus.OK };
+        return { status: StateMachine.VerifyStatus.OK };
     }
 
-    public async execute(_context: CommandExecuteContext<Params>): Promise<void> {
+    public async execute(_context: StateMachine.CommandExecuteContext<Params>): Promise<void> {
         const { features } = _context.params;
         const { senderAddress } = _context.transaction;
         const accountSubstore = this.stores.get(AccountStore);
 
         console.log('Sender address:', senderAddress.toString('hex'));
-        console.log('Converted:', cryptography.address.getLisk32AddressFromAddress(senderAddress));
+        console.log('Converted:', cryptography.address.getKlayr32AddressFromAddress(senderAddress));
 
         for (const feature of features) {
             let isUnique = true;

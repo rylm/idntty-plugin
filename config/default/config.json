@@ -1,8 +1,10 @@
 {
     "system": {
-        "dataPath": "/root/.lisk/idntty",
+        "dataPath": "/root/.klayr/idntty",
         "keepEventsForHeights": 300,
-        "logLevel": "info"
+        "keepInclusionProofsForHeights": 300,
+        "inclusionProofKeys": [],
+        "logLevel": "debug"
     },
     "rpc": {
         "modes": ["ipc", "ws", "http"],
@@ -29,7 +31,7 @@
         "blockTime": 10,
         "bftBatchSize": 103,
         "maxTransactionsSize": 15360,
-        "chainID": "ABCDEF01"
+        "chainID": "00000000"
     },
     "generator": {
         "keys": {
@@ -37,9 +39,5 @@
         }
     },
     "modules": {},
-    "plugins": {
-        "helloInfo": {
-            "syncInterval": 60000
-        }
-    }
+    "plugins": {}
 }
