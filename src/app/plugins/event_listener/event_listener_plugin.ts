@@ -44,8 +44,12 @@ export class EventListenerPlugin extends Plugins.BasePlugin {
                 block.transactions
                     .filter(tx => tx.command === 'issueBadge')
                     .map(tx => ({
-                        publicKey: tx.senderPublicKey.toString('hex'),
-                        forPublicKey: tx.params.recipientAddress as string,
+                        address: cryptography.address.getKlayr32AddressFromPublicKey(
+                            tx.senderPublicKey,
+                        ),
+                        forAddress: cryptography.address.getKlayr32AddressFromAddress(
+                            Buffer.from(tx.params.recipientAddress as string, 'hex'),
+                        ),
                         notificationType: 'issueBadge',
                         data: tx.params,
                     })),

@@ -8,8 +8,8 @@ export const getNotifications =
     async (
         req: FastifyRequest<{
             Querystring: {
-                publicKey?: string;
-                forPublicKey?: string;
+                address?: string;
+                forAddress?: string;
                 notificationType?: string;
                 startDate?: number;
                 endDate?: number;
@@ -18,13 +18,13 @@ export const getNotifications =
         }>,
         res: FastifyReply,
     ) => {
-        const { publicKey, forPublicKey, startDate, endDate, amount } = req.query;
+        const { address, forAddress, startDate, endDate, amount } = req.query;
 
         if (amount && startDate && endDate) {
             return res.status(400).send('Amount, startDate and endDate cannot be used together');
         }
 
-        const notifications = await getUserNotifications(publicKey, forPublicKey);
+        const notifications = await getUserNotifications(address, forAddress);
 
         if (amount) {
             return res.send(notifications.slice(-amount));

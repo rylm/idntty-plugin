@@ -9,6 +9,7 @@ datasource db {
 
 model User {
   public_key        String                @id
+  address           String                @unique
   username          String
   layout            Json
   isAuthority       Boolean
@@ -24,6 +25,7 @@ model User {
 model UserData {
   id         Int     @id @default(autoincrement())
   public_key String
+  address    String
   domain     String?
   label      String
   value      String

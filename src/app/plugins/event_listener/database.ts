@@ -1,22 +1,22 @@
 import { PrismaClient } from '@prisma/client';
-import { cryptography } from 'klayr-sdk';
+// import { cryptography } from 'klayr-sdk';
 
 const prisma = new PrismaClient();
 
 export interface Notification {
-    publicKey: string;
-    forPublicKey?: string;
+    address: string;
+    forAddress?: string;
     notificationType: string;
     data: Record<string, unknown>;
 }
 
 export const saveUserNotifications = async (notifications: Notification[]) =>
     prisma.notification.createMany({
-        data: notifications.map(({ publicKey, forPublicKey, notificationType, data }) => {
+        data: notifications.map(({ address, forAddress, notificationType, data }) => {
             const timestamp = new Date();
             return {
-                public_key: publicKey,
-                for_public_key: forPublicKey,
+                public_key: address,
+                for_public_key: forAddress,
                 type: notificationType,
                 data: JSON.stringify(data, (_, value) =>
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
@@ -27,20 +27,11 @@ export const saveUserNotifications = async (notifications: Notification[]) =>
         }),
     });
 
-export const getUserNotifications = async (publicKey?: string, forPublicKey?: string) =>
+export const getUserNotifications = async (address?: string, forAddress?: string) =>
     prisma.notification.findMany({
         where: {
-            public_key: publicKey,
-            for_public_key: forPublicKey
-                ? {
-                      in: [
-                          forPublicKey,
-                          cryptography.address.getKlayr32AddressFromPublicKey(
-                              Buffer.from(forPublicKey, 'hex'),
-                          ),
-                      ],
-                  }
-                : undefined,
+            public_key: address,
+            for_public_key: forAddress,
         },
         orderBy: {
             timestamp: 'asc',

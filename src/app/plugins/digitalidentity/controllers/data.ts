@@ -23,13 +23,13 @@ export const getLayout =
     () =>
     async (
         req: FastifyRequest<{
-            Querystring: { publicKey: string };
+            Querystring: { address: string };
         }>,
         res: FastifyReply,
     ) => {
-        const { publicKey } = req.query;
+        const { address } = req.query;
 
-        const layout = await getUserLayout(publicKey);
+        const layout = await getUserLayout(address);
 
         return res.send(layout);
     };
@@ -40,14 +40,15 @@ export const updateLayout =
         req: FastifyRequest<{
             Body: {
                 publicKey: string;
+                address: string;
                 layout: object;
             };
         }>,
         res: FastifyReply,
     ) => {
-        const { publicKey, layout } = req.body;
+        const { address, layout } = req.body;
 
-        await updateUserLayout({ publicKey, layout });
+        await updateUserLayout({ address, layout });
 
         return res.send({ success: true });
     };
@@ -71,13 +72,13 @@ export const getPublicData =
     () =>
     async (
         req: FastifyRequest<{
-            Querystring: { publicKey: string };
+            Querystring: { address: string };
         }>,
         res: FastifyReply,
     ) => {
-        const { publicKey } = req.query;
+        const { address } = req.query;
 
-        const data = await getPublicUserDataEntry(publicKey);
+        const data = await getPublicUserDataEntry(address);
 
         return res.send(data);
     };
@@ -86,13 +87,13 @@ export const getSharedData =
     () =>
     async (
         req: FastifyRequest<{
-            Querystring: { publicKey: string; forPublicKey: string };
+            Querystring: { publicKey: string; address: string; forPublicKey: string };
         }>,
         res: FastifyReply,
     ) => {
-        const { publicKey, forPublicKey } = req.query;
+        const { address, forPublicKey } = req.query;
 
-        const data = await getSharedUserDataEntry(publicKey, forPublicKey);
+        const data = await getSharedUserDataEntry(address, forPublicKey);
 
         return res.send(data);
     };
@@ -120,13 +121,13 @@ export const getUserIdentity =
     () =>
     async (
         req: FastifyRequest<{
-            Querystring: { publicKey: string };
+            Querystring: { address: string };
         }>,
         res: FastifyReply,
     ) => {
-        const { publicKey } = req.query;
+        const { address } = req.query;
 
-        const isAuthority = await getIsAuthority(publicKey);
+        const isAuthority = await getIsAuthority(address);
 
         return res.send({ isAuthority });
     };
@@ -135,13 +136,13 @@ export const getCollections =
     () =>
     async (
         req: FastifyRequest<{
-            Querystring: { publicKey: string };
+            Querystring: { address: string };
         }>,
         res: FastifyReply,
     ) => {
-        const { publicKey } = req.query;
+        const { address } = req.query;
 
-        const collections = await getBadgeCollections(publicKey);
+        const collections = await getBadgeCollections(address);
 
         return res.send(collections);
     };
