@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import type { AuthenticatorTransportFuture } from '@simplewebauthn/types';
+import { cryptography } from 'klayr-sdk';
+
 import type { DataEntry } from './controllers/data';
 
 const prisma = new PrismaClient();
@@ -57,6 +59,9 @@ export const createUser = async ({
     prisma.user.create({
         data: {
             public_key: publicKey,
+            address: cryptography.address.getKlayr32AddressFromPublicKey(
+                Buffer.from(publicKey, 'hex'),
+            ),
             username,
             isAuthority,
             layout: JSON.stringify(layout),
@@ -120,10 +125,10 @@ export const updateAuthenticatorDevice = async ({
         },
     });
 
-export const getUserLayout = async (publicKey: string) => {
+export const getUserLayout = async (address: string) => {
     const user = await prisma.user.findUnique({
         where: {
-            public_key: publicKey,
+            address,
         },
         select: {
             layout: true,
@@ -137,16 +142,10 @@ export const getUserLayout = async (publicKey: string) => {
     return JSON.parse(user.layout as string) as object;
 };
 
-export const updateUserLayout = async ({
-    publicKey,
-    layout,
-}: {
-    publicKey: string;
-    layout: object;
-}) =>
+export const updateUserLayout = async ({ address, layout }: { address: string; layout: object }) =>
     prisma.user.update({
         where: {
-            public_key: publicKey,
+            address,
         },
         data: {
             layout: JSON.stringify(layout),
@@ -234,6 +233,9 @@ export const saveUserDataEntry = async ({
                         await prisma.userData.create({
                             data: {
                                 public_key: publicKey,
+                                address: cryptography.address.getKlayr32AddressFromPublicKey(
+                                    Buffer.from(publicKey, 'hex'),
+                                ),
                                 domain,
                                 label: item.uuid,
                                 value: item.value,
@@ -246,8 +248,12 @@ export const saveUserDataEntry = async ({
             if (domain && domain !== publicKey) {
                 await prisma.notification.create({
                     data: {
-                        public_key: publicKey,
-                        for_public_key: domain,
+                        public_key: cryptography.address.getKlayr32AddressFromPublicKey(
+                            Buffer.from(publicKey, 'hex'),
+                        ),
+                        for_public_key: cryptography.address.getKlayr32AddressFromPublicKey(
+                            Buffer.from(domain, 'hex'),
+                        ),
                         type: 'share',
                         data: JSON.stringify({
                             features: data.map(item => item.uuid),
@@ -278,10 +284,10 @@ export const getPrivateUserDataEntry = async (publicKey: string) => {
     );
 };
 
-export const getPublicUserDataEntry = async (publicKey: string) => {
+export const getPublicUserDataEntry = async (address: string) => {
     const entries = await prisma.userData.findMany({
         where: {
-            public_key: publicKey,
+            address,
             domain: '',
         },
     });
@@ -296,10 +302,10 @@ export const getPublicUserDataEntry = async (publicKey: string) => {
     );
 };
 
-export const getSharedUserDataEntry = async (publicKey: string, forPublicKey: string) => {
+export const getSharedUserDataEntry = async (address: string, forPublicKey: string) => {
     const entries = await prisma.userData.findMany({
         where: {
-            public_key: publicKey,
+            address,
             domain: forPublicKey,
             NOT: {
                 public_key: forPublicKey,
@@ -317,10 +323,10 @@ export const getSharedUserDataEntry = async (publicKey: string, forPublicKey: st
     );
 };
 
-export const getIsAuthority = async (publicKey: string) => {
+export const getIsAuthority = async (address: string) => {
     const user = await prisma.user.findUnique({
         where: {
-            public_key: publicKey,
+            address,
         },
     });
 
@@ -352,10 +358,10 @@ export const getBadgeImagesByPublicKey = async (publicKey: string) =>
         },
     });
 
-export const getBadgeCollections = async (publicKey: string) => {
+export const getBadgeCollections = async (address: string) => {
     const user = await prisma.user.findUnique({
         where: {
-            public_key: publicKey,
+            address,
         },
         select: {
             badge_collections: true,
