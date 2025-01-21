@@ -19,12 +19,26 @@ export class SetFeatureCommand extends Modules.BaseCommand {
     public async verify(
         _context: StateMachine.CommandVerifyContext<Params>,
     ): Promise<StateMachine.VerificationResult> {
-        const { params } = _context;
+        const { params, transaction } = _context;
 
-        // const { params, transaction } = _context;
-        // if (transaction.fee < 250000) {
-        //     return { status: StateMachine.VerifyStatus.FAIL, error: new Error('Fee is too low') };
-        // }
+        const accountSubstore = this.stores.get(AccountStore);
+        const { isAuthority } = await accountSubstore.get(_context, transaction.senderAddress);
+
+        if (isAuthority && transaction.fee < 1999000000) {
+            return {
+                status: StateMachine.VerifyStatus.FAIL,
+                error: new Error(
+                    'Fee is too low. Min fee for setFeature for authority accounts is 1999000000',
+                ),
+            };
+        }
+
+        if (!isAuthority && transaction.fee < 99000000) {
+            return {
+                status: StateMachine.VerifyStatus.FAIL,
+                error: new Error('Fee is too low. Min fee for setFeature is 99000000'),
+            };
+        }
 
         const uniqueLabels: string[] = [];
         params.features.forEach(feature => {
