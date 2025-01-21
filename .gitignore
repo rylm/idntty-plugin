@@ -45,3 +45,7 @@ config.local.json
 
 # Build Directory
 dist
+
+# Klayr data
+config/default/dev-validators.json
+config/default/passphrase.json
