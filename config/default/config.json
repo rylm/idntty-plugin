@@ -1,6 +1,6 @@
 {
     "system": {
-        "dataPath": "~/.klayr/idntty",
+        "dataPath": "/root/.klayr/idntty",
         "keepEventsForHeights": 300,
         "keepInclusionProofsForHeights": 300,
         "inclusionProofKeys": [],
