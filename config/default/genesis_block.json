@@ -1,10 +1,10 @@
 {
     "header": {
         "version": 0,
-        "timestamp": 1737496423,
+        "timestamp": 1737496701,
         "height": 0,
         "previousBlockID": "0000000000000000000000000000000000000000000000000000000000000000",
-        "stateRoot": "21a75832e3c0f1565eba956a45a8b10f5ee99f5d280a6e5aabff020d5c911a6a",
+        "stateRoot": "87940c1e57e44edcfee863eec754e9df42970766632270a225c03ede5ff85365",
         "assetRoot": "ac41a7683ec601d68eef0f3644d65cc44872678593c96f7f7a6b5f2e9a493d10",
         "eventRoot": "9c3d2992d4f17cc022d1b0ed87a0b1971f337fac09b1e1e5661be3290052cc3b",
         "transactionRoot": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -19,7 +19,7 @@
         "maxHeightGenerated": 0,
         "impliesMaxPrevotes": true,
         "signature": "",
-        "id": "f79c3ef46483c88ff348ba4d5a347f1fbaa5713235f7e2c265ddabcd7be9097d"
+        "id": "51ec822d91a5a415f792782103af3ebcef1b74ccc89ae98a57d1f7d0257811b1"
     },
     "transactions": [],
     "assets": [
