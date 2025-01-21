@@ -43,9 +43,9 @@
             "minFeePerByte": 1000
         },
         "dynamicReward": {
-            "brackets": ["500000000", "400000000", "300000000"],
-            "distance": 5,
-            "offset": 2
+            "brackets": ["500000000", "400000000", "300000000", "200000000", "100000000"],
+            "distance": 3000000,
+            "offset": 2160
         }
     },
     "plugins": {}
