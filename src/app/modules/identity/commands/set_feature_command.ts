@@ -21,6 +21,11 @@ export class SetFeatureCommand extends Modules.BaseCommand {
     ): Promise<StateMachine.VerificationResult> {
         const { params } = _context;
 
+        // const { params, transaction } = _context;
+        // if (transaction.fee < 250000) {
+        //     return { status: StateMachine.VerifyStatus.FAIL, error: new Error('Fee is too low') };
+        // }
+
         const uniqueLabels: string[] = [];
         params.features.forEach(feature => {
             if (uniqueLabels.includes(feature.label)) {

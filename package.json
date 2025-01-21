@@ -110,7 +110,7 @@
         "@aws-sdk/s3-request-presigner": "^3.554.0",
         "@fastify/cors": "^9.0.1",
         "@klayr/chain-connector-plugin": "0.2.2",
-        "@klayr/dashboard-plugin": "0.4.2",
+        "@klayr/dashboard-plugin": "^0.4.2",
         "@klayr/faucet-plugin": "0.4.2",
         "@klayr/generator-plugin": "0.5.2",
         "@klayr/monitor-plugin": "0.5.2",
