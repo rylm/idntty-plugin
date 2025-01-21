@@ -14,7 +14,23 @@
     },
     "network": {
         "version": "1.0",
-        "seedPeers": [],
+        "seedPeers": [
+            {
+                // idntty-node-eu
+                "ip": "3.121.0.0",
+                "port": 5000
+            },
+            {
+                // idntty-node-us
+                "ip": "54.173.221.232",
+                "port": 5000
+            },
+            {
+                // idntty-node-ap
+                "ip": "35.76.179.118",
+                "port": 5000
+            }
+        ],
         "port": 7667
     },
     "transactionPool": {
