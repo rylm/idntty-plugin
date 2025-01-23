@@ -16,7 +16,7 @@
         "version": "1.0",
         "seedPeers": [
             {
-                "ip": "3.121.0.0",
+                "ip": "18.185.24.9",
                 "port": 5000
             }
         ],
@@ -30,7 +30,18 @@
         "minReplacementFeeDifference": "10"
     },
     "genesis": {
+        "block": {
+            "fromFile": "./config/genesis_block.blob"
+        },
+        "blockTime": 10,
+        "bftBatchSize": 103,
+        "maxTransactionsSize": 15360,
         "chainID": "00000000"
+    },
+    "generator": {
+        "keys": {
+            "fromFile": "./config/dev-validators.json"
+        }
     },
     "modules": {
         "fee": {
