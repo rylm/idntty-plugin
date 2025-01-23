@@ -9,7 +9,7 @@
     "rpc": {
         "modes": ["ipc", "ws", "http"],
         "port": 7887,
-        "host": "0.0.0.0",
+        "host": "127.0.0.1",
         "allowedMethods": ["*"]
     },
     "network": {
@@ -33,8 +33,8 @@
         "block": {
             "fromFile": "./config/genesis_block.blob"
         },
-        "blockTime": 10,
-        "bftBatchSize": 103,
+        "blockTime": 7,
+        "bftBatchSize": 53,
         "maxTransactionsSize": 15360,
         "chainID": "00000000"
     },
@@ -43,15 +43,6 @@
             "fromFile": "./config/dev-validators.json"
         }
     },
-    "modules": {
-        "fee": {
-            "minFeePerByte": 1000
-        },
-        "dynamicReward": {
-            "brackets": ["500000000", "400000000", "300000000", "200000000", "100000000"],
-            "distance": 3000000,
-            "offset": 2160
-        }
-    },
+    "modules": {},
     "plugins": {}
 }
