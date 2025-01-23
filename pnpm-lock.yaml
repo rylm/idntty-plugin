@@ -21,7 +21,7 @@ importers:
         specifier: 0.2.2
         version: 0.2.2(@chainsafe/blst@0.2.9(encoding@0.1.13))(encoding@0.1.13)(sodium-native@3.2.1)
       '@klayr/dashboard-plugin':
-        specifier: 0.4.2
+        specifier: ^0.4.2
         version: 0.4.2(@chainsafe/blst@0.2.9(encoding@0.1.13))(encoding@0.1.13)(sodium-native@3.2.1)
       '@klayr/faucet-plugin':
         specifier: 0.4.2
