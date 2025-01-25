@@ -10,11 +10,10 @@ export class EventListenerPlugin extends Plugins.BasePlugin {
     }
 
     public async load(): Promise<void> {
-        this.apiClient.subscribe('network_newBlock', async data => {
-            const blockData = data as { blockHeader: { height: number } };
-            const encodedBlock = await this.apiClient.invoke('chain_getBlockByHeight', {
-                height: blockData.blockHeader.height,
-            });
+        this.apiClient.subscribe('network_newBlock', async _data => {
+            // const blockData = data as { blockHeader: { height: number } };
+            // console.log('NEW BLOCK HEIGHT: ', blockData.blockHeader.height);
+            const encodedBlock = await this.apiClient.invoke('chain_getLastBlock');
             const block = this.apiClient.block.fromJSON(encodedBlock as unknown as BlockJSON);
             console.log('New block:', inspect(block, { depth: null, colors: true }));
             await saveUserTransactions(
