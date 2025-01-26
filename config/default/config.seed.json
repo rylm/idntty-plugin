@@ -1,6 +1,6 @@
 {
     "system": {
-        "dataPath": "~/.klayr/idntty",
+        "dataPath": "/root/.klayr/idntty",
         "keepEventsForHeights": 300,
         "keepInclusionProofsForHeights": 300,
         "inclusionProofKeys": [],
@@ -14,12 +14,7 @@
     },
     "network": {
         "version": "1.0",
-        "seedPeers": [
-            {
-                "ip": "18.185.24.9",
-                "port": 5000
-            }
-        ],
+        "seedPeers": [],
         "port": 5000
     },
     "transactionPool": {
@@ -33,11 +28,25 @@
         "block": {
             "fromFile": "./config/genesis_block.blob"
         },
-        "blockTime": 7,
-        "bftBatchSize": 53,
+        "blockTime": 10,
+        "bftBatchSize": 103,
         "maxTransactionsSize": 15360,
         "chainID": "00000000"
     },
-    "modules": {},
+    "generator": {
+        "keys": {
+            "fromFile": "./config/dev-validators.json"
+        }
+    },
+    "modules": {
+        "fee": {
+            "minFeePerByte": 1000
+        },
+        "dynamicReward": {
+            "brackets": ["500000000", "400000000", "300000000", "200000000", "100000000"],
+            "distance": 3000000,
+            "offset": 2160
+        }
+    },
     "plugins": {}
 }
