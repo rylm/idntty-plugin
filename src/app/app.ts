@@ -14,7 +14,9 @@ export const getApplication = (config: Types.PartialApplicationConfig): Applicat
     badgeModule.addDependencies(identityModule.method);
 
     // registerModules(app);
-    registerPlugins(app);
+    if (process.env.PLUGINS === '1') {
+        registerPlugins(app);
+    }
 
     console.log('!!!! app');
 
