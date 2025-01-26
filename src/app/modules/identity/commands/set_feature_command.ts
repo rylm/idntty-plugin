@@ -20,9 +20,15 @@ export class SetFeatureCommand extends Modules.BaseCommand {
         _context: StateMachine.CommandVerifyContext<Params>,
     ): Promise<StateMachine.VerificationResult> {
         const { params, transaction } = _context;
-
         const accountSubstore = this.stores.get(AccountStore);
-        const { isAuthority } = await accountSubstore.get(_context, transaction.senderAddress);
+
+        let isAuthority = false;
+        try {
+            const account = await accountSubstore.get(_context, transaction.senderAddress);
+            isAuthority = account.isAuthority;
+        } catch (error) {
+            console.log('Account not found, considering it to be an identity account');
+        }
 
         if (isAuthority && transaction.fee < 1999000000) {
             return {
