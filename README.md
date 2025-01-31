@@ -1,31 +1,41 @@
-# Getting Started with Klayr Blockchain Client
+# How to run a Klayr node
 
-### Start a node
+## Prerequisites
 
+-   Strictly Node.js v18.20.4
+
+## Install dependencies
+
+```bash
+npm install
 ```
+
+## Configure the node
+
+1. Copy the `config.rpc.json` file to `config.json`:
+
+```bash
+cp config/default/config.rpc.json config/default/config.json
+```
+
+2. Set system.dataPath in `config.json` to a directory to store the node's data (make sure it is empty)
+
+## Run the node
+
+```bash
 ./bin/run start
 ```
 
-### Add a new module
+## Dashboard
 
-```
-klayr generate:module ModuleName
-// Example
-klayr generate:module token
-```
+You can add the following to the `plugins` section of your `config.json` to enable the dashboard:
 
-### Add a new command
-
-```
-klayr generate:command ModuleName Command
-// Example
-klayr generate:command token transfer
-```
-
-### Add a new plugin
-
-```
-klayr generate:plugin PluginName
-// Example
-klayr generate:plugin httpAPI
+```json
+"plugins": {
+    "dashboard": {
+        "applicationUrl": "ws://NODE_IP:7887/rpc-ws",
+        "host": "0.0.0.0",
+        "port": PORT
+    }
+}
 ```
