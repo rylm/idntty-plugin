@@ -9,14 +9,18 @@
     "rpc": {
         "modes": ["ipc", "ws", "http"],
         "port": 7887,
-        "host": "127.0.0.1",
+        "host": "0.0.0.0",
         "allowedMethods": ["*"]
     },
     "network": {
         "version": "1.0",
         "seedPeers": [
             {
-                "ip": "18.185.24.9",
+                "ip": "54.255.94.18",
+                "port": 5000
+            },
+            {
+                "ip": "15.236.107.110",
                 "port": 5000
             }
         ],

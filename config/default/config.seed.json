@@ -14,7 +14,16 @@
     },
     "network": {
         "version": "1.0",
-        "seedPeers": [],
+        "seedPeers": [
+            {
+                "ip": "54.255.94.18",
+                "port": 5000
+            },
+            {
+                "ip": "15.236.107.110",
+                "port": 5000
+            }
+        ],
         "port": 5000
     },
     "transactionPool": {
